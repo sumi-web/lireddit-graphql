@@ -1,0 +1,13 @@
+schema: src/graphql/**/*.gql
+generates:
+  ./src/graphql/generated.ts:
+    config:
+      useIndexSignature: true
+    plugins:
+      - typescript
+      - typescript-resolvers
+watch: true
+# Passed directly through to chokidar's file watch configuration
+watchConfig:
+  usePolling: true
+  interval: 1000
