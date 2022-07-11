@@ -12,8 +12,4 @@ export class Post {
 
 	@Column("double precision")
 	views: number;
-	@Column()
-	createdAt: Date;
-	@Column()
-	updateAt: Date;
 }

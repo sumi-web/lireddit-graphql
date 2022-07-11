@@ -11,3 +11,7 @@ watch: true
 watchConfig:
   usePolling: true
   interval: 1000
+
+hooks:
+  afterOneFileWrite:
+    - prettier --write
