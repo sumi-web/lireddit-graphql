@@ -1,16 +1,17 @@
+import path from "path";
 import { DataSource } from "typeorm";
-import { Post } from "../entities/Post";
+import { Environment } from "../utils/environment";
 
 export const Database = new DataSource({
 	type: "postgres",
 	host: "localhost",
 	port: 5432,
-	username: "postgres",
-	password: "1234",
-	database: "lireddit",
+	username: Environment.dbUserName,
+	password: Environment.dbPassword,
+	database: Environment.dbName,
 	synchronize: true,
 	logging: true,
-	entities: [Post],
+	entities: [path.join(__dirname, "..", "entities/**/*.{js,ts}")],
 	subscribers: [],
 	migrations: [],
 });

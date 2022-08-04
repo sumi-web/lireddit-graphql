@@ -1,0 +1,8 @@
+scalar Date
+
+type Post {
+	Id: ID!
+	title: String!
+	createdDate: Date!
+	updatedDate: Date!
+}

@@ -1,17 +1,10 @@
-schema: src/graphql/**/*.gql
+schema: "src/graphql/**/*.gql"
 generates:
-  ./src/graphql/generated.ts:
+  ./src/graphql/graphqlTypes.ts:
     config:
-      useIndexSignature: true
+      typesPrefix: "GQL"
+      mappers:
+        User: ../entities/User.entity#User
     plugins:
       - typescript
       - typescript-resolvers
-watch: true
-# Passed directly through to chokidar's file watch configuration
-watchConfig:
-  usePolling: true
-  interval: 1000
-
-hooks:
-  afterOneFileWrite:
-    - prettier --write

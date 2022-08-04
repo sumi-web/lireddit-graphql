@@ -1,4 +1,12 @@
-type Post {
-	id: Int!
-	title: String!
+type User {
+	id: ID!
+	name: String!
+	email: String!
+	password: String!
+}
+
+input UserInput {
+	name: String!
+	email: String!
+	password: String!
 }

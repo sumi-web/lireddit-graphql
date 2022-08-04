@@ -1,9 +1,11 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { User } from '../entities/User.entity';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -11,21 +13,47 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Date: any;
 };
 
-export type Post = {
+export type GQLMutation = {
+  __typename?: 'Mutation';
+  signUpUser?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type GQLMutationSignUpUserArgs = {
+  user: GQLUserInput;
+};
+
+export type GQLPost = {
   __typename?: 'Post';
-  id: Scalars['Int'];
+  Id: Scalars['ID'];
+  createdDate: Scalars['Date'];
   title: Scalars['String'];
+  updatedDate: Scalars['Date'];
 };
 
-export type Query = {
+export type GQLQuery = {
   __typename?: 'Query';
-  healthCheck?: Maybe<Scalars['String']>;
+  healthCheck: Scalars['String'];
 };
 
-export type WithIndex<TObject> = TObject & Record<string, any>;
-export type ResolversObject<TObject> = WithIndex<TObject>;
+export type GQLUser = {
+  __typename?: 'User';
+  email: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type GQLUserInput = {
+  email: Scalars['String'];
+  name: Scalars['String'];
+  password: Scalars['String'];
+};
+
+
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -93,35 +121,64 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 ) => TResult | Promise<TResult>;
 
 /** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = ResolversObject<{
+export type GQLResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
-  Post: ResolverTypeWrapper<Post>;
+  Date: ResolverTypeWrapper<Scalars['Date']>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
+  Mutation: ResolverTypeWrapper<{}>;
+  Post: ResolverTypeWrapper<GQLPost>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
-}>;
+  User: ResolverTypeWrapper<User>;
+  UserInput: GQLUserInput;
+};
 
 /** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = ResolversObject<{
+export type GQLResolversParentTypes = {
   Boolean: Scalars['Boolean'];
-  Int: Scalars['Int'];
-  Post: Post;
+  Date: Scalars['Date'];
+  ID: Scalars['ID'];
+  Mutation: {};
+  Post: GQLPost;
   Query: {};
   String: Scalars['String'];
-}>;
+  User: User;
+  UserInput: GQLUserInput;
+};
 
-export type PostResolvers<ContextType = any, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+export interface GQLDateScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['Date'], any> {
+  name: 'Date';
+}
+
+export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
+  signUpUser?: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationSignUpUserArgs, 'user'>>;
+};
+
+export type GQLPostResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Post'] = GQLResolversParentTypes['Post']> = {
+  Id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  createdDate?: Resolver<GQLResolversTypes['Date'], ParentType, ContextType>;
+  title?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  updatedDate?: Resolver<GQLResolversTypes['Date'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
+};
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  healthCheck?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-}>;
+export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
+  healthCheck?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+};
 
-export type Resolvers<ContextType = any> = ResolversObject<{
-  Post?: PostResolvers<ContextType>;
-  Query?: QueryResolvers<ContextType>;
-}>;
+export type GQLUserResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['User'] = GQLResolversParentTypes['User']> = {
+  email?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  password?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GQLResolvers<ContextType = any> = {
+  Date?: GraphQLScalarType;
+  Mutation?: GQLMutationResolvers<ContextType>;
+  Post?: GQLPostResolvers<ContextType>;
+  Query?: GQLQueryResolvers<ContextType>;
+  User?: GQLUserResolvers<ContextType>;
+};
 
