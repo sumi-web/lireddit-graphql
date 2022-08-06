@@ -1,0 +1,8 @@
+type Mutation {
+  # User
+  registerUser(user: RegisterInput!): User!
+  loginUser(user: LoginInput!): User!
+  # Post
+  createPost(post: PostInput!): Boolean
+  deletePost(id: ID!): Boolean
+}

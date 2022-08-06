@@ -1,3 +1,7 @@
 type Query {
-	healthCheck: String!
+  healthCheck: String!
+  # User
+  # Post
+  getPost(id: ID!): Post!
+  getAllPost: [Post!]
 }

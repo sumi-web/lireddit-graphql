@@ -1,10 +1,22 @@
-import { userBackend } from "../../backends/user.backend";
-import { GQLResolvers } from "../graphqlTypes";
+import { postBackend } from '../../backends/post.backend';
+import { userBackend } from '../../backends/user.backend';
+import { GQLResolvers } from '../graphqlTypes';
 
 export const mutationResolvers: GQLResolvers = {
-	Mutation: {
-		signUpUser: (_, { user }) => {
-			return userBackend.signUpUser(user);
-		},
-	},
+  Mutation: {
+    // User
+    registerUser: (_, { user }) => {
+      return userBackend.registerUser(user);
+    },
+    loginUser: (_, { user }) => {
+      return userBackend.loginUser(user);
+    },
+    // Post
+    createPost: (_, { post }) => {
+      return postBackend.createPost(post);
+    },
+    deletePost: (_, { id }) => {
+      return postBackend.deletePost(id);
+    }
+  }
 };

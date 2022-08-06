@@ -1,28 +1,33 @@
-import { IsEmail, Length } from "class-validator";
+import { IsEmail, Length } from 'class-validator';
 import {
-	Column,
-	CreateDateColumn,
-	Entity,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn,
-} from "typeorm";
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
 
 @Entity()
 export class User {
-	@PrimaryGeneratedColumn("uuid")
-	id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-	@Length(2, 30)
-	@Column({ type: "varchar", length: 30 })
-	name: string;
+  @Length(2, 30)
+  @Index({ unique: true })
+  @Column({ type: 'varchar', length: 30 })
+  userName: string;
 
-	@IsEmail()
-	@Column({ type: "varchar", length: 30 })
-	email: string;
+  @IsEmail()
+  @Column({ type: 'varchar', length: 30 })
+  email: string;
 
-	@CreateDateColumn()
-	createdDate: Date;
+  @Column({ type: 'varchar', select: false })
+  password?: string;
 
-	@UpdateDateColumn()
-	updatedDate: Date;
+  @CreateDateColumn()
+  createdDate: Date;
+
+  @UpdateDateColumn()
+  updatedDate: Date;
 }

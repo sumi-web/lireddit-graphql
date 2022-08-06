@@ -1,12 +1,20 @@
+scalar Date
+
 type User {
-	id: ID!
-	name: String!
-	email: String!
-	password: String!
+  id: ID!
+  userName: String!
+  email: String!
+  createdDate: Date!
+  updatedDate: Date!
 }
 
-input UserInput {
-	name: String!
-	email: String!
-	password: String!
+input RegisterInput {
+  userName: String!
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  userName: String!
+  password: String!
 }
