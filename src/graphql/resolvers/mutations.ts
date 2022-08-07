@@ -8,8 +8,8 @@ export const mutationResolvers: GQLResolvers = {
     registerUser: (_, { user }) => {
       return userBackend.registerUser(user);
     },
-    loginUser: (_, { user }) => {
-      return userBackend.loginUser(user);
+    loginUser: (_, { user }, ctx) => {
+      return userBackend.loginUser(user, ctx);
     },
     // Post
     createPost: (_, { post }) => {

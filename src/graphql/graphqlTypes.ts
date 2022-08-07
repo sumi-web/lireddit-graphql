@@ -65,6 +65,7 @@ export type GQLQuery = {
   getAllPost?: Maybe<Array<GQLPost>>;
   getPost: GQLPost;
   healthCheck: Scalars['String'];
+  rehydrateUser?: Maybe<GQLUser>;
 };
 
 
@@ -207,6 +208,7 @@ export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolvers
   getAllPost?: Resolver<Maybe<Array<GQLResolversTypes['Post']>>, ParentType, ContextType>;
   getPost?: Resolver<GQLResolversTypes['Post'], ParentType, ContextType, RequireFields<GQLQueryGetPostArgs, 'id'>>;
   healthCheck?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  rehydrateUser?: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>;
 };
 
 export type GQLUserResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['User'] = GQLResolversParentTypes['User']> = {

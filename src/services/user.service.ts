@@ -2,6 +2,7 @@ import { Database } from '../config/database';
 import { User } from '../entities/user.entity';
 import argon2 from 'argon2';
 import { GQLLoginInput, GQLRegisterInput, GQLUser } from '../graphql/graphqlTypes';
+import { MyContext } from '../types';
 
 const registerUser = async ({ userName, email, password }: GQLRegisterInput): Promise<GQLUser> => {
   const user = new User();
@@ -25,7 +26,10 @@ const registerUser = async ({ userName, email, password }: GQLRegisterInput): Pr
   return newUser;
 };
 
-const loginUser = async ({ userName, password }: GQLLoginInput): Promise<GQLUser> => {
+const loginUser = async (
+  { userName, password }: GQLLoginInput,
+  { req }: MyContext
+): Promise<GQLUser> => {
   const user = await Database.getRepository(User)
     .createQueryBuilder('user')
     .where('user.userName = :userName', { userName })
@@ -45,7 +49,23 @@ const loginUser = async ({ userName, password }: GQLLoginInput): Promise<GQLUser
 
   const { password: pass, ...newUser } = user;
 
+  req.session.userId = user.id;
+
   return newUser;
 };
 
-export const userBackend = { registerUser, loginUser };
+const rehydrateUser = async ({ req }: MyContext) => {
+  console.log('check the session id', req.session.userId);
+
+  if (!req.session.userId) {
+    return null;
+  }
+
+  const userRepo = Database.getRepository(User);
+
+  const user = await userRepo.findOneBy({ id: req.session.userId });
+
+  return user;
+};
+
+export const userBackend = { registerUser, loginUser, rehydrateUser };
