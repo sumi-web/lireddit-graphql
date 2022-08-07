@@ -4,7 +4,10 @@ import argon2 from 'argon2';
 import { GQLLoginInput, GQLRegisterInput, GQLUser } from '../graphql/graphqlTypes';
 import { MyContext } from '../types';
 
-const registerUser = async ({ userName, email, password }: GQLRegisterInput): Promise<GQLUser> => {
+const registerUser = async (
+  { userName, email, password }: GQLRegisterInput,
+  { req }: MyContext
+): Promise<GQLUser> => {
   const user = new User();
   const userRepo = Database.getRepository(User);
 
@@ -22,6 +25,8 @@ const registerUser = async ({ userName, email, password }: GQLRegisterInput): Pr
   user.password = hashedPass;
 
   const { password: pass, ...newUser } = await userRepo.save(user);
+
+  req.session.userId = newUser.id;
 
   return newUser;
 };

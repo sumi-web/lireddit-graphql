@@ -5,8 +5,8 @@ import { GQLResolvers } from '../graphqlTypes';
 export const mutationResolvers: GQLResolvers = {
   Mutation: {
     // User
-    registerUser: (_, { user }) => {
-      return userBackend.registerUser(user);
+    registerUser: (_, { user }, ctx) => {
+      return userBackend.registerUser(user, ctx);
     },
     loginUser: (_, { user }, ctx) => {
       return userBackend.loginUser(user, ctx);
