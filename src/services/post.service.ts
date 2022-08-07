@@ -1,5 +1,5 @@
 import { Database } from '../config/database';
-import { Post } from '../entities/Post.entity';
+import { Post } from '../entities/post.entity';
 import { GQLPost, GQLPostInput } from '../graphql/graphqlTypes';
 
 const createPost = async ({ title }: GQLPostInput): Promise<boolean> => {
