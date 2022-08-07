@@ -1,5 +1,7 @@
 import { IsEmail, Length } from 'class-validator';
 import {
+  AfterLoad,
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -30,4 +32,14 @@ export class User {
 
   @UpdateDateColumn()
   updatedDate: Date;
+
+  @AfterLoad()
+  afterLoad() {
+    console.log('after load ran here');
+  }
+
+  @BeforeInsert()
+  beforeInsert() {
+    console.log('before insert ran here');
+  }
 }

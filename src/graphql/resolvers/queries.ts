@@ -1,4 +1,4 @@
-import { postBackend } from '../../backends/post.backend';
+import { postBackend } from '../../services/post.service';
 import { GQLResolvers } from '../graphqlTypes';
 
 export const queryResolvers: GQLResolvers = {

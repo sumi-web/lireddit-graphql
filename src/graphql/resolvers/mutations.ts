@@ -1,5 +1,5 @@
-import { postBackend } from '../../backends/post.backend';
-import { userBackend } from '../../backends/user.backend';
+import { postBackend } from '../../services/post.service';
+import { userBackend } from '../../services/user.service';
 import { GQLResolvers } from '../graphqlTypes';
 
 export const mutationResolvers: GQLResolvers = {

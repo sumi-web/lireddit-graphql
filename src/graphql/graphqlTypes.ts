@@ -1,6 +1,4 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { User } from '../entities/User.entity';
-import { Post } from '../entities/Post.entity';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -163,12 +161,12 @@ export type GQLResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   LoginInput: GQLLoginInput;
   Mutation: ResolverTypeWrapper<{}>;
-  Post: ResolverTypeWrapper<Post>;
+  Post: ResolverTypeWrapper<GQLPost>;
   PostInput: GQLPostInput;
   Query: ResolverTypeWrapper<{}>;
   RegisterInput: GQLRegisterInput;
   String: ResolverTypeWrapper<Scalars['String']>;
-  User: ResolverTypeWrapper<User>;
+  User: ResolverTypeWrapper<GQLUser>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -178,12 +176,12 @@ export type GQLResolversParentTypes = {
   ID: Scalars['ID'];
   LoginInput: GQLLoginInput;
   Mutation: {};
-  Post: Post;
+  Post: GQLPost;
   PostInput: GQLPostInput;
   Query: {};
   RegisterInput: GQLRegisterInput;
   String: Scalars['String'];
-  User: User;
+  User: GQLUser;
 };
 
 export interface GQLDateScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['Date'], any> {

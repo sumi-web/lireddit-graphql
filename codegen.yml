@@ -1,12 +1,9 @@
 overwrite: true
 schema: http://localhost:5001/graphql
 generates:
-    ./src/graphql/graphqlTypes.ts:
-        config:
-            typesPrefix: 'GQL'
-            mappers:
-                User: ../entities/User.entity#User
-                Post: ../entities/Post.entity#Post
-        plugins:
-            - typescript
-            - typescript-resolvers
+  ./src/graphql/graphqlTypes.ts:
+    config:
+      typesPrefix: 'GQL'
+    plugins:
+      - typescript
+      - typescript-resolvers
