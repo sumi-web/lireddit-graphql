@@ -6,7 +6,11 @@ import { schema } from '../graphql';
 import { MyContext } from '../types';
 
 export const corsOption = {
-  origin: ['http:localhost', 'https://studio.apollographql.com', 'https://legacy.graphqlbin.com'],
+  origin: [
+    'http://localhost:3000',
+    'https://studio.apollographql.com',
+    'https://legacy.graphqlbin.com'
+  ],
   credentials: true
 };
 
