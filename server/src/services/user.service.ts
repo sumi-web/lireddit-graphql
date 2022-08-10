@@ -3,6 +3,7 @@ import { User } from '../entities/user.entity';
 import argon2 from 'argon2';
 import { GQLLoginInput, GQLRegisterInput, GQLUser } from '../graphql/graphqlTypes';
 import { MyContext } from '../types';
+import { ApolloError } from 'apollo-server-core';
 
 const registerUser = async (
   { userName, email, password }: GQLRegisterInput,
@@ -15,7 +16,7 @@ const registerUser = async (
   const oldUser = await userRepo.findOneBy({ userName });
 
   if (oldUser) {
-    throw new Error('this username is taken please input another');
+    throw new ApolloError('username is taken please input another', 'Not_Permitted');
   }
 
   user.userName = userName;

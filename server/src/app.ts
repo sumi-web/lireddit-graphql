@@ -1,10 +1,19 @@
 import express, { Application, Response } from 'express';
-import { corsOption, startApolloServer } from './config/apollosServer';
+import { startApolloServer } from './config/apollosServer';
 import session from 'express-session';
 import { createClient } from 'redis';
 import { Environment } from './utils/environment';
 import cors from 'cors';
 import connectRedis from 'connect-redis';
+
+const corsOption = {
+  origin: [
+    'http://localhost:3000',
+    'https://studio.apollographql.com',
+    'https://legacy.graphqlbin.com'
+  ],
+  credentials: true
+};
 
 export const startServer = async () => {
   const app: Application = express();

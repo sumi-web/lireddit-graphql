@@ -5,15 +5,6 @@ import http from 'http';
 import { schema } from '../graphql';
 import { MyContext } from '../types';
 
-export const corsOption = {
-  origin: [
-    'http://localhost:3000',
-    'https://studio.apollographql.com',
-    'https://legacy.graphqlbin.com'
-  ],
-  credentials: true
-};
-
 export const startApolloServer = async (app: Application) => {
   const httpServer = http.createServer(app);
   const apolloServer = new ApolloServer({
@@ -27,7 +18,7 @@ export const startApolloServer = async (app: Application) => {
   await apolloServer.start();
   apolloServer.applyMiddleware({
     app,
-    cors: corsOption,
+    cors: false,
     path: '/graphql'
   });
 

@@ -4,12 +4,15 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { theme } from '../utils/theme';
 import { Provider } from 'urql';
 import { client } from '../utils/urqlClient';
+import NotificationProvider from '../context/useNotification';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider value={client}>
       <ChakraProvider theme={theme}>
-        <Component {...pageProps} />
+        <NotificationProvider>
+          <Component {...pageProps} />
+        </NotificationProvider>
       </ChakraProvider>
     </Provider>
   );

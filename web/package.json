@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate": "graphql-codegen -w"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.2.6",
@@ -23,6 +24,10 @@
     "yarn": "^1.22.19"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.11.5",
+    "@graphql-codegen/typescript": "^2.7.3",
+    "@graphql-codegen/typescript-operations": "^2.5.3",
+    "@graphql-codegen/typescript-urql": "^3.6.4",
     "@types/node": "18.6.4",
     "@types/react": "18.0.16",
     "@types/react-dom": "18.0.6",

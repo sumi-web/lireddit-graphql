@@ -19,6 +19,7 @@
     "@graphql-codegen/typescript": "^2.7.1",
     "@graphql-codegen/typescript-resolvers": "^2.7.1",
     "@types/connect-redis": "^0.0.18",
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/express-session": "^1.17.5",
     "@types/node": "^17.0.21",

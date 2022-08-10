@@ -8,7 +8,14 @@ interface Props {
 
 const Wrapper = ({ children, variant = 'regular' }: Props) => {
   return (
-    <Box mt={8} mx="auto" maxWidth={variant === 'regular' ? '800px' : '400px'} w="100%">
+    <Box
+      mx="auto"
+      maxWidth={variant === 'regular' ? '800px' : '400px'}
+      h="100vh"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
       {children}
     </Box>
   );

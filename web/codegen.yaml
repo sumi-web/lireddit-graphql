@@ -1,0 +1,12 @@
+overwrite: true
+schema: http://localhost:5001/graphql
+documents: './graphql/**/*.gql'
+generates:
+  ./graphql/graphqlHooks.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-urql
+    config:
+      withHooks: true
+      typesPrefix: 'GQL'
