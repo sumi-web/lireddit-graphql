@@ -3,18 +3,17 @@ import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import Wrapper from '../components/Wrapper';
 import { useNotification } from '../context/useNotification';
-import { useRegisterUserMutation } from '../graphql/graphqlHooks';
+import { useLoginUserMutation } from '../graphql/graphqlHooks';
 
-interface RegisterError {
+interface LoginError {
   userName: string;
-  email: string;
   password: string;
 }
 
-const Register = () => {
+const Login = () => {
   const notCtx = useNotification();
   console.log('check the notCtx', notCtx);
-  const [_, registerUser] = useRegisterUserMutation();
+  const [_, login] = useLoginUserMutation();
 
   const router = useRouter();
 
@@ -22,20 +21,14 @@ const Register = () => {
     <Wrapper variant="small">
       <>
         <Formik
-          initialValues={{ userName: '', email: '', password: '' }}
+          initialValues={{ userName: '', password: '' }}
           validate={(values) => {
-            const errors = {} as RegisterError;
+            const errors = {} as LoginError;
 
             if (values.userName.trim().length === 0) {
               errors.userName = 'username is required';
             } else if (values.userName.trim().length <= 2) {
               errors.userName = 'username should contain more than 2 characters';
-            }
-
-            if (!values.email) {
-              errors.email = 'Required';
-            } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-              errors.email = 'Invalid email address';
             }
 
             if (values.password.trim().length === 0) {
@@ -47,8 +40,10 @@ const Register = () => {
             return errors;
           }}
           onSubmit={async (values) => {
-            const res = await registerUser({ user: values });
+            const res = await login({ user: values });
+            console.log('check the response', res);
 
+            // const res = await registerUser({ user: values });
             if (res.data?.user) {
               router.push('/');
             } else if (res.error) {
@@ -57,7 +52,6 @@ const Register = () => {
                 autoClose: true,
                 status: 'error'
               });
-
               notCtx.show();
             }
           }}
@@ -77,18 +71,7 @@ const Register = () => {
                   />
                   <FormErrorMessage>{errors.userName}</FormErrorMessage>
                 </FormControl>
-                <FormControl isInvalid={!!errors.email && touched.email}>
-                  <FormLabel htmlFor="email">Email</FormLabel>
-                  <Input
-                    id="email"
-                    type="text"
-                    name="email"
-                    value={values.email}
-                    placeholder="email"
-                    onChange={handleChange}
-                  />
-                  <FormErrorMessage>{errors.email}</FormErrorMessage>
-                </FormControl>
+
                 <FormControl isInvalid={!!errors.password && touched.password}>
                   <FormLabel htmlFor="password">Password</FormLabel>
                   <Input
@@ -113,4 +96,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

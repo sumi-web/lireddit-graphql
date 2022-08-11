@@ -9,7 +9,7 @@
     "dev2": "nodemon --exec ts-node src/index.ts",
     "start": "node dist/index.js",
     "start2": "ts-node src/index.ts",
-    "generate": "graphql-codegen -w"
+    "gen": "graphql-codegen -w"
   },
   "keywords": [],
   "author": "",

@@ -37,20 +37,20 @@ export class User {
   @Length(2, 30)
   @Index({ unique: true })
   @Column({ type: 'varchar', length: 30 })
-  userName: string;
+  userName!: string;
 
   @IsEmail()
   @Column({ type: 'varchar', length: 30 })
-  email: string;
+  email!: string;
 
   @Column({ type: 'varchar', select: false })
   password?: string;
 
   @CreateDateColumn()
-  createdDate: Date;
+  createdDate!: Date;
 
   @UpdateDateColumn()
-  updatedDate: Date;
+  updatedDate!: Date;
 
   @AfterLoad()
   afterLoad() {

@@ -43,7 +43,7 @@ const loginUser = async (
     .getOne();
 
   if (!user) {
-    throw new Error('user name does not exist');
+    throw new Error('username does not exist');
   }
 
   // compare password

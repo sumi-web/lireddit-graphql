@@ -89,6 +89,13 @@ export type GQLUser = {
   userName: Scalars['String'];
 };
 
+export type GQLLoginUserMutationVariables = Exact<{
+  user: GQLLoginInput;
+}>;
+
+
+export type GQLLoginUserMutation = { __typename?: 'Mutation', user: { __typename?: 'User', id: string, userName: string, email: string } };
+
 export type GQLRegisterUserMutationVariables = Exact<{
   user: GQLRegisterInput;
 }>;
@@ -97,6 +104,19 @@ export type GQLRegisterUserMutationVariables = Exact<{
 export type GQLRegisterUserMutation = { __typename?: 'Mutation', user: { __typename?: 'User', id: string, userName: string, email: string } };
 
 
+export const LoginUserDocument = gql`
+    mutation LoginUser($user: LoginInput!) {
+  user: loginUser(user: $user) {
+    id
+    userName
+    email
+  }
+}
+    `;
+
+export function useLoginUserMutation() {
+  return Urql.useMutation<GQLLoginUserMutation, GQLLoginUserMutationVariables>(LoginUserDocument);
+};
 export const RegisterUserDocument = gql`
     mutation RegisterUser($user: RegisterInput!) {
   user: registerUser(user: $user) {
