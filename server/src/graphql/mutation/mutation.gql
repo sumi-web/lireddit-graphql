@@ -2,6 +2,7 @@ type Mutation {
   # User
   registerUser(user: RegisterInput!): User!
   loginUser(user: LoginInput!): User!
+  logoutUser: Boolean
   # Post
   createPost(post: PostInput!): Boolean
   deletePost(id: ID!): Boolean

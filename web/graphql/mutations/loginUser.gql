@@ -1,7 +1,5 @@
 mutation LoginUser($user: LoginInput!) {
   user: loginUser(user: $user) {
-    id
-    userName
-    email
+    ...RegularUser
   }
 }

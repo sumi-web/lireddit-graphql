@@ -1,0 +1,5 @@
+query RehydrateUser {
+  user: rehydrateUser {
+    ...RegularUser
+  }
+}

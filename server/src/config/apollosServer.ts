@@ -12,7 +12,7 @@ export const startApolloServer = async (app: Application) => {
     csrfPrevention: true,
     cache: 'bounded',
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-    context: ({ req }: MyContext) => ({ req })
+    context: ({ req, res }: MyContext) => ({ req, res })
   });
 
   await apolloServer.start();

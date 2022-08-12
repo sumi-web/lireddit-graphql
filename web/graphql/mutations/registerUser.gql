@@ -1,7 +1,5 @@
 mutation RegisterUser($user: RegisterInput!) {
   user: registerUser(user: $user) {
-    id
-    userName
-    email
+    ...RegularUser
   }
 }

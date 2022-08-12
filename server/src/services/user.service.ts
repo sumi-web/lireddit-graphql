@@ -61,7 +61,7 @@ const loginUser = async (
 };
 
 const rehydrateUser = async ({ req }: MyContext) => {
-  console.log('check the session id', req.session.userId);
+  console.log('check the session id%%', req.session.userId);
 
   if (!req.session.userId) {
     return null;

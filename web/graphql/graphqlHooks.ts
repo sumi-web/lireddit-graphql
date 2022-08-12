@@ -26,6 +26,7 @@ export type GQLMutation = {
   createPost?: Maybe<Scalars['Boolean']>;
   deletePost?: Maybe<Scalars['Boolean']>;
   loginUser: GQLUser;
+  logoutUser?: Maybe<Scalars['Boolean']>;
   registerUser: GQLUser;
 };
 
@@ -89,12 +90,19 @@ export type GQLUser = {
   userName: Scalars['String'];
 };
 
+export type GQLRegularUserFragment = { __typename?: 'User', id: string, userName: string, email: string };
+
 export type GQLLoginUserMutationVariables = Exact<{
   user: GQLLoginInput;
 }>;
 
 
 export type GQLLoginUserMutation = { __typename?: 'Mutation', user: { __typename?: 'User', id: string, userName: string, email: string } };
+
+export type GQLLogoutUserMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GQLLogoutUserMutation = { __typename?: 'Mutation', logout?: boolean | null };
 
 export type GQLRegisterUserMutationVariables = Exact<{
   user: GQLRegisterInput;
@@ -103,30 +111,57 @@ export type GQLRegisterUserMutationVariables = Exact<{
 
 export type GQLRegisterUserMutation = { __typename?: 'Mutation', user: { __typename?: 'User', id: string, userName: string, email: string } };
 
+export type GQLRehydrateUserQueryVariables = Exact<{ [key: string]: never; }>;
 
+
+export type GQLRehydrateUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, userName: string, email: string } | null };
+
+export const RegularUserFragmentDoc = gql`
+    fragment RegularUser on User {
+  id
+  userName
+  email
+}
+    `;
 export const LoginUserDocument = gql`
     mutation LoginUser($user: LoginInput!) {
   user: loginUser(user: $user) {
-    id
-    userName
-    email
+    ...RegularUser
   }
 }
-    `;
+    ${RegularUserFragmentDoc}`;
 
 export function useLoginUserMutation() {
   return Urql.useMutation<GQLLoginUserMutation, GQLLoginUserMutationVariables>(LoginUserDocument);
 };
-export const RegisterUserDocument = gql`
-    mutation RegisterUser($user: RegisterInput!) {
-  user: registerUser(user: $user) {
-    id
-    userName
-    email
-  }
+export const LogoutUserDocument = gql`
+    mutation LogoutUser {
+  logout: logoutUser
 }
     `;
 
+export function useLogoutUserMutation() {
+  return Urql.useMutation<GQLLogoutUserMutation, GQLLogoutUserMutationVariables>(LogoutUserDocument);
+};
+export const RegisterUserDocument = gql`
+    mutation RegisterUser($user: RegisterInput!) {
+  user: registerUser(user: $user) {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
 export function useRegisterUserMutation() {
   return Urql.useMutation<GQLRegisterUserMutation, GQLRegisterUserMutationVariables>(RegisterUserDocument);
+};
+export const RehydrateUserDocument = gql`
+    query RehydrateUser {
+  user: rehydrateUser {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+export function useRehydrateUserQuery(options?: Omit<Urql.UseQueryArgs<GQLRehydrateUserQueryVariables>, 'query'>) {
+  return Urql.useQuery<GQLRehydrateUserQuery, GQLRehydrateUserQueryVariables>({ query: RehydrateUserDocument, ...options });
 };

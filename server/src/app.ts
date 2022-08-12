@@ -29,10 +29,10 @@ export const startServer = async () => {
 
   app.use(
     session({
-      name: 'qId',
+      name: Environment.cookieName,
       store: new RedisStore({ client: redisClient, disableTouch: true }),
       cookie: {
-        maxAge: 1000 * 60, //  change it to later 1day
+        maxAge: 1000 * 60 * 60, //  change it to later 1day
         httpOnly: true,
         sameSite: 'lax',
         secure: Environment.isProd

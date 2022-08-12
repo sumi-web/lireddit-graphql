@@ -25,6 +25,7 @@ export type GQLMutation = {
   createPost?: Maybe<Scalars['Boolean']>;
   deletePost?: Maybe<Scalars['Boolean']>;
   loginUser: GQLUser;
+  logoutUser?: Maybe<Scalars['Boolean']>;
   registerUser: GQLUser;
 };
 
@@ -193,6 +194,7 @@ export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolv
   createPost?: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationCreatePostArgs, 'post'>>;
   deletePost?: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationDeletePostArgs, 'id'>>;
   loginUser?: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationLoginUserArgs, 'user'>>;
+  logoutUser?: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   registerUser?: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationRegisterUserArgs, 'user'>>;
 };
 
