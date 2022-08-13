@@ -19,8 +19,10 @@
     "framer-motion": "^6",
     "graphql": "^16.5.0",
     "next": "12.2.4",
+    "next-urql": "^3.3.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-is": "^18.2.0",
     "urql": "^2.2.3",
     "yarn": "^1.22.19"
   },

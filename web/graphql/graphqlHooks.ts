@@ -90,6 +90,8 @@ export type GQLUser = {
   userName: Scalars['String'];
 };
 
+export type GQLRegularPostFragment = { __typename?: 'Post', id: string, title: string, createdDate: any };
+
 export type GQLRegularUserFragment = { __typename?: 'User', id: string, userName: string, email: string };
 
 export type GQLLoginUserMutationVariables = Exact<{
@@ -111,11 +113,23 @@ export type GQLRegisterUserMutationVariables = Exact<{
 
 export type GQLRegisterUserMutation = { __typename?: 'Mutation', user: { __typename?: 'User', id: string, userName: string, email: string } };
 
+export type GQLGetAllPostQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GQLGetAllPostQuery = { __typename?: 'Query', posts?: Array<{ __typename?: 'Post', id: string, title: string, createdDate: any }> | null };
+
 export type GQLRehydrateUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GQLRehydrateUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, userName: string, email: string } | null };
 
+export const RegularPostFragmentDoc = gql`
+    fragment RegularPost on Post {
+  id
+  title
+  createdDate
+}
+    `;
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
@@ -153,6 +167,17 @@ export const RegisterUserDocument = gql`
 
 export function useRegisterUserMutation() {
   return Urql.useMutation<GQLRegisterUserMutation, GQLRegisterUserMutationVariables>(RegisterUserDocument);
+};
+export const GetAllPostDocument = gql`
+    query GetAllPost {
+  posts: getAllPost {
+    ...RegularPost
+  }
+}
+    ${RegularPostFragmentDoc}`;
+
+export function useGetAllPostQuery(options?: Omit<Urql.UseQueryArgs<GQLGetAllPostQueryVariables>, 'query'>) {
+  return Urql.useQuery<GQLGetAllPostQuery, GQLGetAllPostQueryVariables>({ query: GetAllPostDocument, ...options });
 };
 export const RehydrateUserDocument = gql`
     query RehydrateUser {

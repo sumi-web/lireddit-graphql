@@ -1,0 +1,7 @@
+me -> browse http://localhost:3000
+-> next.js server
+-> request graphql server localhost:5001/graphql
+-> building the HTML
+-> sending back to your browser
+
+Note:- the thing about nest.js after you loaded a single page, the page after that are not server side rendered

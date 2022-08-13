@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Wrapper from '../components/Wrapper';
 import { useNotification } from '../context/useNotification';
 import { useLoginUserMutation } from '../graphql/graphqlHooks';
+import { withUrql } from '../hocs/withUrqlClient';
 
 interface LoginError {
   userName: string;
@@ -12,7 +13,6 @@ interface LoginError {
 
 const Login = () => {
   const notCtx = useNotification();
-  console.log('check the notCtx', notCtx);
   const [_, login] = useLoginUserMutation();
 
   const router = useRouter();
@@ -96,4 +96,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default withUrql(Login);

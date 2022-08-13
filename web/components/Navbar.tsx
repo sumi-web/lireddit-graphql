@@ -4,14 +4,12 @@ import { Link } from '@chakra-ui/react';
 import { useLogoutUserMutation, useRehydrateUserQuery } from '../graphql/graphqlHooks';
 
 const Navbar = () => {
-  const [result, reExecuteQuery] = useRehydrateUserQuery({ requestPolicy: 'cache-and-network' });
+  const [result] = useRehydrateUserQuery({ requestPolicy: 'cache-and-network' });
   const [{ fetching: logoutFetching }, logout] = useLogoutUserMutation();
-
-  console.log('check the result', result);
 
   let body = null;
 
-  const { data, fetching } = result;
+  const { data } = result;
 
   // user is not logged in
   if (!data?.user)
@@ -37,7 +35,6 @@ const Navbar = () => {
           colorScheme="white"
           onClick={() => {
             logout();
-            reExecuteQuery({ requestPolicy: 'network-only' });
           }}
           isLoading={logoutFetching}
         >
@@ -47,11 +44,13 @@ const Navbar = () => {
     );
 
   return (
-    <Flex bg="teal" p={4}>
-      <Box ml={'auto'} display="flex" gap={'10px'}>
-        {body}
-      </Box>
-    </Flex>
+    <>
+      <Flex bg="teal" p={4}>
+        <Box ml={'auto'} display="flex" gap={'10px'}>
+          {body}
+        </Box>
+      </Flex>
+    </>
   );
 };
 

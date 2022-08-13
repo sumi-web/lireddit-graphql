@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Wrapper from '../components/Wrapper';
 import { useNotification } from '../context/useNotification';
 import { useRegisterUserMutation } from '../graphql/graphqlHooks';
+import { withUrql } from '../hocs/withUrqlClient';
 
 interface RegisterError {
   userName: string;
@@ -13,7 +14,6 @@ interface RegisterError {
 
 const Register = () => {
   const notCtx = useNotification();
-  console.log('check the notCtx', notCtx);
   const [_, registerUser] = useRegisterUserMutation();
 
   const router = useRouter();
@@ -113,4 +113,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default withUrql(Register);

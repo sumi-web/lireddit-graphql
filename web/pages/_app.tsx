@@ -1,20 +1,16 @@
-import '../styles/globals.css';
-import type { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
-import { theme } from '../utils/theme';
-import { Provider } from 'urql';
-import { client } from '../utils/urqlClient';
+import type { AppProps } from 'next/app';
 import NotificationProvider from '../context/useNotification';
+import '../styles/globals.css';
+import { theme } from '../utils/theme';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Provider value={client}>
-      <ChakraProvider theme={theme}>
-        <NotificationProvider>
-          <Component {...pageProps} />
-        </NotificationProvider>
-      </ChakraProvider>
-    </Provider>
+    <ChakraProvider theme={theme}>
+      <NotificationProvider>
+        <Component {...pageProps} />
+      </NotificationProvider>
+    </ChakraProvider>
   );
 }
 
