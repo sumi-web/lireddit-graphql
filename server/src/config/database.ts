@@ -5,6 +5,7 @@ import { Environment } from '../utils/environment';
 export const Database = new DataSource({
   type: 'postgres',
   host: 'localhost',
+  logger: 'advanced-console',
   port: 5432,
   username: Environment.dbUserName,
   password: Environment.dbPassword,
