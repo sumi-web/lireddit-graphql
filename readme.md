@@ -1,4 +1,4 @@
-<!-- MIGRATIONS -->
+<!-- MIGRATIONS Guide-->
 
 // manually have to write query when using this command
 Create migration-> typeorm-ts-node-commonjs migration:create ./src/migrations/{your_file_name}
