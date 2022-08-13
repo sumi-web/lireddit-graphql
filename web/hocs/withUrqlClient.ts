@@ -8,6 +8,9 @@ export const withUrql = (component: React.FC, ssr = false) => {
   return withUrqlClient(
     (ssrExchange) => ({
       url: 'http://localhost:5001/graphql',
+      fetchOptions: {
+        credentials: 'include'
+      },
       exchanges: [
         dedupExchange,
         cacheExchange({

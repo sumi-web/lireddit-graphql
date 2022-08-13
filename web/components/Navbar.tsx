@@ -2,9 +2,15 @@ import { Flex, Box, Button } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { Link } from '@chakra-ui/react';
 import { useLogoutUserMutation, useRehydrateUserQuery } from '../graphql/graphqlHooks';
+import { isServer } from '../utils/isServer';
+
+// Note:- when ssr enabled its going to fetch current user on the Next.js server and Next.js does not have a cookie
+// its not important for Seo to know about the user details
+// its making extra request on the server everytime a page is server-side-rendered to get the user which is null
+// So I do not want the rehydrateUser query to run on server side, thats why we used paused option to pause the query being run on ssr, it will run when window obj is defined
 
 const Navbar = () => {
-  const [result] = useRehydrateUserQuery({ requestPolicy: 'cache-and-network' });
+  const [result] = useRehydrateUserQuery({ requestPolicy: 'cache-and-network', pause: isServer() });
   const [{ fetching: logoutFetching }, logout] = useLogoutUserMutation();
 
   let body = null;

@@ -2,8 +2,6 @@ import { Database } from '../config/database';
 import { Post } from '../entities/post.entity';
 import { GQLPost, GQLPostInput } from '../graphql/graphqlTypes';
 
-const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
 const createPost = async ({ title }: GQLPostInput): Promise<boolean> => {
   const post = new Post();
   post.title = title;
