@@ -40,6 +40,7 @@ export class User {
   userName!: string;
 
   @IsEmail()
+  @Index({ unique: true })
   @Column({ type: 'varchar', length: 30 })
   email!: string;
 

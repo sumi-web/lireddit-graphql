@@ -4,6 +4,7 @@ import argon2 from 'argon2';
 import { GQLLoginInput, GQLRegisterInput, GQLUser } from '../graphql/graphqlTypes';
 import { MyContext } from '../types';
 import { ApolloError } from 'apollo-server-core';
+import { sendMail } from '../utils/sendEmail';
 
 const registerUser = async (
   { userName, email, password }: GQLRegisterInput,
@@ -13,11 +14,14 @@ const registerUser = async (
   const userRepo = Database.getRepository(User);
 
   // check if user already exist
-  const oldUser = await userRepo.findOneBy({ userName });
+  const oldUserUsername = await userRepo.findOneBy({ userName, email });
 
-  if (oldUser) {
+  if (oldUserUsername)
     throw new ApolloError('username is taken please input another', 'Not_Permitted');
-  }
+
+  const oldUserWithEmail = await userRepo.findOneBy({ email });
+
+  if (oldUserWithEmail) throw new Error('email is already taken');
 
   user.userName = userName;
   user.email = email.toLowerCase();
@@ -74,4 +78,14 @@ const rehydrateUser = async ({ req }: MyContext) => {
   return user;
 };
 
-export const userBackend = { registerUser, loginUser, rehydrateUser };
+const forgotPassword = async (email: string) => {
+  const userRepo = Database.getRepository(User);
+
+  const user = await userRepo.findOneBy({ email });
+
+  if (!user) throw new ApolloError('user not found');
+
+  return true;
+};
+
+export const userBackend = { registerUser, loginUser, rehydrateUser, forgotPassword };

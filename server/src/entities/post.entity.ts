@@ -9,14 +9,14 @@ import {
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'varchar', length: 100 })
-  title: string;
+  title!: string;
 
   @CreateDateColumn()
-  createdDate: Date;
+  createdDate!: Date;
 
   @UpdateDateColumn()
-  updatedDate: Date;
+  updatedDate!: Date;
 }
