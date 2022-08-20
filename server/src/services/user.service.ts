@@ -4,7 +4,11 @@ import argon2 from 'argon2';
 import { GQLLoginInput, GQLRegisterInput, GQLUser } from '../graphql/graphqlTypes';
 import { MyContext } from '../types';
 import { ApolloError } from 'apollo-server-core';
-import { sendMail } from '../utils/sendEmail';
+import { sendEmail } from '../utils/sendEmail';
+import crypto from 'crypto';
+import { generateUniqueKey } from '../utils/generateUniqueKey';
+import Redis from 'ioredis';
+import { Environment } from '../utils/environment';
 
 const registerUser = async (
   { userName, email, password }: GQLRegisterInput,
@@ -29,7 +33,7 @@ const registerUser = async (
   const hashedPass = await argon2.hash(password);
   user.password = hashedPass;
 
-  const { password: pass, ...newUser } = await userRepo.save(user);
+  const newUser = await userRepo.save(user);
 
   req.session.userId = newUser.id;
 
@@ -78,14 +82,63 @@ const rehydrateUser = async ({ req }: MyContext) => {
   return user;
 };
 
-const forgotPassword = async (email: string) => {
+const forgotPassword = async (userName: string, redis: Redis): Promise<boolean> => {
   const userRepo = Database.getRepository(User);
 
-  const user = await userRepo.findOneBy({ email });
+  const user = await userRepo.findOneBy({ userName });
 
   if (!user) throw new ApolloError('user not found');
+
+  const token = generateUniqueKey(20);
+
+  const hash = crypto.createHash('sha256').update(token).digest('hex');
+
+  await redis.set(Environment.forgotPasswordPrefix + hash, user.id, 'EX', 60 * 15); // expire in 15min
+
+  console.log('check the token here', token);
+
+  const html = `<a href="http://localhost:3000/forgot-password?hash=${token}">reset password</a>`;
+
+  await sendEmail({ to: user.email, subject: 'Reset your password', html });
 
   return true;
 };
 
-export const userBackend = { registerUser, loginUser, rehydrateUser, forgotPassword };
+const resetPassword = async (
+  token: string,
+  password: string,
+  { redis, req }: MyContext
+): Promise<GQLUser> => {
+  const hash = crypto.createHash('sha256').update(token).digest('hex');
+  const userRepo = Database.getRepository(User);
+
+  const userId = await redis.get(Environment.forgotPasswordPrefix + hash);
+
+  if (!userId) {
+    throw new ApolloError('Reset password token is invalid or has been expired');
+  }
+
+  const user = await userRepo.findOneBy({ id: userId });
+
+  if (!user) {
+    throw new ApolloError('User not found');
+  }
+
+  console.log('check the user', user);
+
+  user.password = await argon2.hash(password);
+
+  const currentUser = await userRepo.save(user);
+
+  req.session.userId = currentUser.id;
+
+  return currentUser;
+};
+
+export const userBackend = {
+  registerUser,
+  loginUser,
+  rehydrateUser,
+  forgotPassword,
+  resetPassword
+};

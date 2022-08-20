@@ -10,4 +10,5 @@ export class Environment {
   public static secretKey: string = process.env.SECRET_KEY || 'keyboard cat';
   public static cookieName: string = 'qId';
   public static gmailPassword: string = process.env.GMAIL_PASS || '';
+  public static forgotPasswordPrefix = 'forgot-password';
 }

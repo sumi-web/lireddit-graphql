@@ -1,10 +1,10 @@
 import express, { Application, Response } from 'express';
 import { startApolloServer } from './config/apollosServer';
 import session from 'express-session';
-import { createClient } from 'redis';
 import { Environment } from './utils/environment';
 import cors from 'cors';
 import connectRedis from 'connect-redis';
+import Redis from 'ioredis';
 
 const corsOption = {
   origin: [
@@ -23,14 +23,14 @@ export const startServer = async () => {
   app.use(express.urlencoded({ extended: true }));
 
   // session middleware
+  const redis = new Redis();
+
   const RedisStore = connectRedis(session);
-  const redisClient = createClient({ legacyMode: true });
-  redisClient.connect().catch(console.error);
 
   app.use(
     session({
       name: Environment.cookieName,
-      store: new RedisStore({ client: redisClient, disableTouch: true }),
+      store: new RedisStore({ client: redis, disableTouch: true }),
       cookie: {
         maxAge: 1000 * 60 * 60, //  change it to later 1day
         httpOnly: true,
@@ -44,7 +44,7 @@ export const startServer = async () => {
   );
 
   // setting up apollo-server
-  const apolloServer = await startApolloServer(app);
+  const apolloServer = await startApolloServer(app, redis);
 
   /** Healthcheck */
   app.get('/ping', (_, res: Response) => res.status(200).send('Welcome to lireddit project'));

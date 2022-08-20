@@ -26,6 +26,12 @@ export const mutationResolvers: GQLResolvers = {
         })
       );
     },
+    forgotPassword: (_, { userName }, ctx) => {
+      return userBackend.forgotPassword(userName, ctx.redis);
+    },
+    resetPassword: (_, { token, password }, ctx) => {
+      return userBackend.resetPassword(token, password, ctx);
+    },
     // Post
     createPost: (_, { post }) => {
       return postBackend.createPost(post);

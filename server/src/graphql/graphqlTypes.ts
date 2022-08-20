@@ -24,9 +24,11 @@ export type GQLMutation = {
   __typename?: 'Mutation';
   createPost?: Maybe<Scalars['Boolean']>;
   deletePost?: Maybe<Scalars['Boolean']>;
+  forgotPassword?: Maybe<Scalars['Boolean']>;
   loginUser: GQLUser;
   logoutUser?: Maybe<Scalars['Boolean']>;
   registerUser: GQLUser;
+  resetPassword: GQLUser;
 };
 
 
@@ -40,6 +42,11 @@ export type GQLMutationDeletePostArgs = {
 };
 
 
+export type GQLMutationForgotPasswordArgs = {
+  userName: Scalars['String'];
+};
+
+
 export type GQLMutationLoginUserArgs = {
   user: GQLLoginInput;
 };
@@ -47,6 +54,12 @@ export type GQLMutationLoginUserArgs = {
 
 export type GQLMutationRegisterUserArgs = {
   user: GQLRegisterInput;
+};
+
+
+export type GQLMutationResetPasswordArgs = {
+  password: Scalars['String'];
+  token: Scalars['String'];
 };
 
 export type GQLPost = {
@@ -193,9 +206,11 @@ export interface GQLDateScalarConfig extends GraphQLScalarTypeConfig<GQLResolver
 export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
   createPost?: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationCreatePostArgs, 'post'>>;
   deletePost?: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationDeletePostArgs, 'id'>>;
+  forgotPassword?: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationForgotPasswordArgs, 'userName'>>;
   loginUser?: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationLoginUserArgs, 'user'>>;
   logoutUser?: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   registerUser?: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationRegisterUserArgs, 'user'>>;
+  resetPassword?: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationResetPasswordArgs, 'password' | 'token'>>;
 };
 
 export type GQLPostResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Post'] = GQLResolversParentTypes['Post']> = {

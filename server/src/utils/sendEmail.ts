@@ -9,7 +9,7 @@ interface Options {
 }
 
 // async..await is not allowed in global scope, must use a wrapper
-export async function sendMail({ to, subject, html }: Options) {
+export async function sendEmail({ to, subject, html }: Options) {
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
     service: 'gmail',
