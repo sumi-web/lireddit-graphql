@@ -32,6 +32,9 @@ export const mutationResolvers: GQLResolvers = {
     resetPassword: (_, { token, password }, ctx) => {
       return userBackend.resetPassword(token, password, ctx);
     },
+    rehydrateUser: (_, __, ctx) => {
+      return userBackend.rehydrateUser(ctx);
+    },
     // Post
     createPost: (_, { post }) => {
       return postBackend.createPost(post);

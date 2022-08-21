@@ -1,4 +1,4 @@
-query RehydrateUser {
+mutation RehydrateUser {
   user: rehydrateUser {
     ...RegularUser
   }

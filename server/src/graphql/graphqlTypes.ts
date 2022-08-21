@@ -28,6 +28,7 @@ export type GQLMutation = {
   loginUser: GQLUser;
   logoutUser?: Maybe<Scalars['Boolean']>;
   registerUser: GQLUser;
+  rehydrateUser?: Maybe<GQLUser>;
   resetPassword: GQLUser;
 };
 
@@ -79,7 +80,6 @@ export type GQLQuery = {
   getAllPost?: Maybe<Array<GQLPost>>;
   getPost: GQLPost;
   healthCheck: Scalars['String'];
-  rehydrateUser?: Maybe<GQLUser>;
 };
 
 
@@ -95,10 +95,10 @@ export type GQLRegisterInput = {
 
 export type GQLUser = {
   __typename?: 'User';
-  createdDate: Scalars['Date'];
+  createdDate?: Maybe<Scalars['Date']>;
   email: Scalars['String'];
   id: Scalars['ID'];
-  updatedDate: Scalars['Date'];
+  updatedDate?: Maybe<Scalars['Date']>;
   userName: Scalars['String'];
 };
 
@@ -210,6 +210,7 @@ export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolv
   loginUser?: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationLoginUserArgs, 'user'>>;
   logoutUser?: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   registerUser?: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationRegisterUserArgs, 'user'>>;
+  rehydrateUser?: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>;
   resetPassword?: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationResetPasswordArgs, 'password' | 'token'>>;
 };
 
@@ -225,14 +226,13 @@ export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolvers
   getAllPost?: Resolver<Maybe<Array<GQLResolversTypes['Post']>>, ParentType, ContextType>;
   getPost?: Resolver<GQLResolversTypes['Post'], ParentType, ContextType, RequireFields<GQLQueryGetPostArgs, 'id'>>;
   healthCheck?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
-  rehydrateUser?: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>;
 };
 
 export type GQLUserResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['User'] = GQLResolversParentTypes['User']> = {
-  createdDate?: Resolver<GQLResolversTypes['Date'], ParentType, ContextType>;
+  createdDate?: Resolver<Maybe<GQLResolversTypes['Date']>, ParentType, ContextType>;
   email?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
-  updatedDate?: Resolver<GQLResolversTypes['Date'], ParentType, ContextType>;
+  updatedDate?: Resolver<Maybe<GQLResolversTypes['Date']>, ParentType, ContextType>;
   userName?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

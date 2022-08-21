@@ -4,8 +4,8 @@ type User {
   id: ID!
   userName: String!
   email: String!
-  createdDate: Date!
-  updatedDate: Date!
+  createdDate: Date
+  updatedDate: Date
 }
 
 input RegisterInput {

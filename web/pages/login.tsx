@@ -1,10 +1,20 @@
-import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Link
+} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import Wrapper from '../components/Wrapper';
 import { useNotification } from '../context/useNotification';
 import { useLoginUserMutation } from '../graphql/graphqlHooks';
 import { withUrql } from '../hocs/withUrqlClient';
+import NextLink from 'next/link';
 
 interface LoginError {
   userName: string;
@@ -84,9 +94,20 @@ const Login = () => {
                   />
                   <FormErrorMessage>{errors.password}</FormErrorMessage>
                 </FormControl>
+                <Flex justifyContent={'flex-end'}>
+                  <NextLink href="/forgot-password">
+                    <Link>Forgot Password?</Link>
+                  </NextLink>
+                </Flex>
                 <Button type="submit" colorScheme="teal" isLoading={isSubmitting}>
                   Register
                 </Button>
+                <Flex gap={'10px'}>
+                  <Box>Don&apos;t have an account?</Box>
+                  <NextLink href="/register">
+                    <Link color={'teal'}>Register</Link>
+                  </NextLink>
+                </Flex>
               </Box>
             </Form>
           )}

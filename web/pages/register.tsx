@@ -1,5 +1,15 @@
-import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Link
+} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import Wrapper from '../components/Wrapper';
 import { useNotification } from '../context/useNotification';
@@ -104,6 +114,12 @@ const Register = () => {
                 <Button type="submit" colorScheme="teal" isLoading={isSubmitting}>
                   Register
                 </Button>
+                <Flex gap={'10px'}>
+                  <Box>Already have an account?</Box>
+                  <NextLink href="/login">
+                    <Link color={'teal'}>login</Link>
+                  </NextLink>
+                </Flex>
               </Box>
             </Form>
           )}

@@ -1,8 +1,10 @@
 import { Flex, Box, Button } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { Link } from '@chakra-ui/react';
-import { useLogoutUserMutation, useRehydrateUserQuery } from '../graphql/graphqlHooks';
+import { useLogoutUserMutation } from '../graphql/graphqlHooks';
 import { isServer } from '../utils/isServer';
+import { useUser } from '../context/useUser';
+import { useRouter } from 'next/router';
 
 // Note:- when ssr enabled its going to fetch current user on the Next.js server and Next.js does not have a cookie
 // its not important for Seo to know about the user details
@@ -10,15 +12,19 @@ import { isServer } from '../utils/isServer';
 // So I do not want the rehydrateUser query to run on server side, thats why we used paused option to pause the query being run on ssr, it will run when window obj is defined
 
 const Navbar = () => {
-  const [result] = useRehydrateUserQuery({ requestPolicy: 'cache-and-network', pause: isServer() });
+  // const [result] = useRehydrateUserQuery({ requestPolicy: 'cache-and-network', pause: isServer() });
   const [{ fetching: logoutFetching }, logout] = useLogoutUserMutation();
+
+  const userCtx = useUser();
+
+  const router = useRouter();
 
   let body = null;
 
-  const { data } = result;
+  // const { data } = result;
 
   // user is not logged in
-  if (!data?.user)
+  if (!userCtx?.user)
     body = (
       <>
         <NextLink href="/login">
@@ -33,14 +39,16 @@ const Navbar = () => {
     );
 
   // user is logged
-  if (data?.user)
+  if (userCtx?.user)
     body = (
       <Flex gap={'10px'} alignItems="center">
-        <Box color={'white'}>{data.user.userName}</Box>
+        <Box color={'white'}>{userCtx.user.userName}</Box>
         <Button
           colorScheme="white"
-          onClick={() => {
-            logout();
+          onClick={async () => {
+            await logout();
+            userCtx.setUser(null);
+            router.replace('/login');
           }}
           isLoading={logoutFetching}
         >

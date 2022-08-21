@@ -25,9 +25,12 @@ export type GQLMutation = {
   __typename?: 'Mutation';
   createPost?: Maybe<Scalars['Boolean']>;
   deletePost?: Maybe<Scalars['Boolean']>;
+  forgotPassword?: Maybe<Scalars['Boolean']>;
   loginUser: GQLUser;
   logoutUser?: Maybe<Scalars['Boolean']>;
   registerUser: GQLUser;
+  rehydrateUser?: Maybe<GQLUser>;
+  resetPassword: GQLUser;
 };
 
 
@@ -41,6 +44,11 @@ export type GQLMutationDeletePostArgs = {
 };
 
 
+export type GQLMutationForgotPasswordArgs = {
+  userName: Scalars['String'];
+};
+
+
 export type GQLMutationLoginUserArgs = {
   user: GQLLoginInput;
 };
@@ -48,6 +56,12 @@ export type GQLMutationLoginUserArgs = {
 
 export type GQLMutationRegisterUserArgs = {
   user: GQLRegisterInput;
+};
+
+
+export type GQLMutationResetPasswordArgs = {
+  password: Scalars['String'];
+  token: Scalars['String'];
 };
 
 export type GQLPost = {
@@ -67,7 +81,6 @@ export type GQLQuery = {
   getAllPost?: Maybe<Array<GQLPost>>;
   getPost: GQLPost;
   healthCheck: Scalars['String'];
-  rehydrateUser?: Maybe<GQLUser>;
 };
 
 
@@ -83,16 +96,23 @@ export type GQLRegisterInput = {
 
 export type GQLUser = {
   __typename?: 'User';
-  createdDate: Scalars['Date'];
+  createdDate?: Maybe<Scalars['Date']>;
   email: Scalars['String'];
   id: Scalars['ID'];
-  updatedDate: Scalars['Date'];
+  updatedDate?: Maybe<Scalars['Date']>;
   userName: Scalars['String'];
 };
 
 export type GQLRegularPostFragment = { __typename?: 'Post', id: string, title: string, createdDate: any };
 
 export type GQLRegularUserFragment = { __typename?: 'User', id: string, userName: string, email: string };
+
+export type GQLForgotPasswordMutationVariables = Exact<{
+  userName: Scalars['String'];
+}>;
+
+
+export type GQLForgotPasswordMutation = { __typename?: 'Mutation', sent?: boolean | null };
 
 export type GQLLoginUserMutationVariables = Exact<{
   user: GQLLoginInput;
@@ -113,15 +133,23 @@ export type GQLRegisterUserMutationVariables = Exact<{
 
 export type GQLRegisterUserMutation = { __typename?: 'Mutation', user: { __typename?: 'User', id: string, userName: string, email: string } };
 
+export type GQLResetPasswordMutationVariables = Exact<{
+  token: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type GQLResetPasswordMutation = { __typename?: 'Mutation', created: { __typename?: 'User', id: string, userName: string, email: string } };
+
 export type GQLGetAllPostQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GQLGetAllPostQuery = { __typename?: 'Query', posts?: Array<{ __typename?: 'Post', id: string, title: string, createdDate: any }> | null };
 
-export type GQLRehydrateUserQueryVariables = Exact<{ [key: string]: never; }>;
+export type GQLRehydrateUserMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GQLRehydrateUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, userName: string, email: string } | null };
+export type GQLRehydrateUserMutation = { __typename?: 'Mutation', user?: { __typename?: 'User', id: string, userName: string, email: string } | null };
 
 export const RegularPostFragmentDoc = gql`
     fragment RegularPost on Post {
@@ -137,6 +165,15 @@ export const RegularUserFragmentDoc = gql`
   email
 }
     `;
+export const ForgotPasswordDocument = gql`
+    mutation ForgotPassword($userName: String!) {
+  sent: forgotPassword(userName: $userName)
+}
+    `;
+
+export function useForgotPasswordMutation() {
+  return Urql.useMutation<GQLForgotPasswordMutation, GQLForgotPasswordMutationVariables>(ForgotPasswordDocument);
+};
 export const LoginUserDocument = gql`
     mutation LoginUser($user: LoginInput!) {
   user: loginUser(user: $user) {
@@ -168,6 +205,17 @@ export const RegisterUserDocument = gql`
 export function useRegisterUserMutation() {
   return Urql.useMutation<GQLRegisterUserMutation, GQLRegisterUserMutationVariables>(RegisterUserDocument);
 };
+export const ResetPasswordDocument = gql`
+    mutation ResetPassword($token: String!, $password: String!) {
+  created: resetPassword(token: $token, password: $password) {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+export function useResetPasswordMutation() {
+  return Urql.useMutation<GQLResetPasswordMutation, GQLResetPasswordMutationVariables>(ResetPasswordDocument);
+};
 export const GetAllPostDocument = gql`
     query GetAllPost {
   posts: getAllPost {
@@ -180,13 +228,13 @@ export function useGetAllPostQuery(options?: Omit<Urql.UseQueryArgs<GQLGetAllPos
   return Urql.useQuery<GQLGetAllPostQuery, GQLGetAllPostQueryVariables>({ query: GetAllPostDocument, ...options });
 };
 export const RehydrateUserDocument = gql`
-    query RehydrateUser {
+    mutation RehydrateUser {
   user: rehydrateUser {
     ...RegularUser
   }
 }
     ${RegularUserFragmentDoc}`;
 
-export function useRehydrateUserQuery(options?: Omit<Urql.UseQueryArgs<GQLRehydrateUserQueryVariables>, 'query'>) {
-  return Urql.useQuery<GQLRehydrateUserQuery, GQLRehydrateUserQueryVariables>({ query: RehydrateUserDocument, ...options });
+export function useRehydrateUserMutation() {
+  return Urql.useMutation<GQLRehydrateUserMutation, GQLRehydrateUserMutationVariables>(RehydrateUserDocument);
 };
