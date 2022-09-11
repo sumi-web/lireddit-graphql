@@ -1,6 +1,7 @@
 type Query {
   healthCheck: String!
   # User
+  getAllUsers: [User!]
   # Post
   getPost(id: ID!): Post!
   getAllPost: [Post!]

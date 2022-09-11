@@ -3,10 +3,15 @@ scalar Date
 type Post {
   id: ID!
   title: String!
+  text: String!
+  points: Int!
+  user: User!
   createdDate: Date!
   updatedDate: Date!
 }
 
 input PostInput {
   title: String!
+  text: String!
+  points: Int
 }

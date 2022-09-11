@@ -1,3 +1,4 @@
+import { ApolloError } from 'apollo-server-core';
 import { postBackend } from '../../services/post.service';
 import { userBackend } from '../../services/user.service';
 import { MyContext } from '../../types';
@@ -36,8 +37,11 @@ export const mutationResolvers: GQLResolvers = {
       return userBackend.rehydrateUser(ctx);
     },
     // Post
-    createPost: (_, { post }) => {
-      return postBackend.createPost(post);
+    createPost: (_, { post }, ctx) => {
+      if (!ctx.req.session.userId) {
+        throw new ApolloError('User not authenticated');
+      }
+      return postBackend.createPost(ctx.req.session.userId, post);
     },
     deletePost: (_, { id }) => {
       return postBackend.deletePost(id);

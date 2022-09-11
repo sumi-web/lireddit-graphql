@@ -68,17 +68,23 @@ export type GQLPost = {
   __typename?: 'Post';
   createdDate: Scalars['Date'];
   id: Scalars['ID'];
+  points: Scalars['Int'];
+  text: Scalars['String'];
   title: Scalars['String'];
   updatedDate: Scalars['Date'];
+  user: GQLUser;
 };
 
 export type GQLPostInput = {
+  points?: InputMaybe<Scalars['Int']>;
+  text: Scalars['String'];
   title: Scalars['String'];
 };
 
 export type GQLQuery = {
   __typename?: 'Query';
   getAllPost?: Maybe<Array<GQLPost>>;
+  getAllUsers?: Maybe<Array<GQLUser>>;
   getPost: GQLPost;
   healthCheck: Scalars['String'];
 };
@@ -106,6 +112,13 @@ export type GQLUser = {
 export type GQLRegularPostFragment = { __typename?: 'Post', id: string, title: string, createdDate: any };
 
 export type GQLRegularUserFragment = { __typename?: 'User', id: string, userName: string, email: string };
+
+export type GQLCreatePostMutationVariables = Exact<{
+  post: GQLPostInput;
+}>;
+
+
+export type GQLCreatePostMutation = { __typename?: 'Mutation', created?: boolean | null };
 
 export type GQLForgotPasswordMutationVariables = Exact<{
   userName: Scalars['String'];
@@ -165,6 +178,15 @@ export const RegularUserFragmentDoc = gql`
   email
 }
     `;
+export const CreatePostDocument = gql`
+    mutation CreatePost($post: PostInput!) {
+  created: createPost(post: $post)
+}
+    `;
+
+export function useCreatePostMutation() {
+  return Urql.useMutation<GQLCreatePostMutation, GQLCreatePostMutationVariables>(CreatePostDocument);
+};
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($userName: String!) {
   sent: forgotPassword(userName: $userName)

@@ -1,6 +1,6 @@
-import { Button, Alert, Slide, Box, AlertIcon } from '@chakra-ui/react';
+import { Alert, Slide, Box, AlertIcon } from '@chakra-ui/react';
 import { useEffect } from 'react';
-import { Status, useNotification } from '../context/useNotification';
+import { useNotification } from '../context/useNotification';
 
 interface Props {
   isOpen: boolean;

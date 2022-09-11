@@ -67,17 +67,23 @@ export type GQLPost = {
   __typename?: 'Post';
   createdDate: Scalars['Date'];
   id: Scalars['ID'];
+  points: Scalars['Int'];
+  text: Scalars['String'];
   title: Scalars['String'];
   updatedDate: Scalars['Date'];
+  user: GQLUser;
 };
 
 export type GQLPostInput = {
+  points?: InputMaybe<Scalars['Int']>;
+  text: Scalars['String'];
   title: Scalars['String'];
 };
 
 export type GQLQuery = {
   __typename?: 'Query';
   getAllPost?: Maybe<Array<GQLPost>>;
+  getAllUsers?: Maybe<Array<GQLUser>>;
   getPost: GQLPost;
   healthCheck: Scalars['String'];
 };
@@ -174,6 +180,7 @@ export type GQLResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Date: ResolverTypeWrapper<Scalars['Date']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   LoginInput: GQLLoginInput;
   Mutation: ResolverTypeWrapper<{}>;
   Post: ResolverTypeWrapper<GQLPost>;
@@ -189,6 +196,7 @@ export type GQLResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Date: Scalars['Date'];
   ID: Scalars['ID'];
+  Int: Scalars['Int'];
   LoginInput: GQLLoginInput;
   Mutation: {};
   Post: GQLPost;
@@ -217,13 +225,17 @@ export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolv
 export type GQLPostResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Post'] = GQLResolversParentTypes['Post']> = {
   createdDate?: Resolver<GQLResolversTypes['Date'], ParentType, ContextType>;
   id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  points?: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  text?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   updatedDate?: Resolver<GQLResolversTypes['Date'], ParentType, ContextType>;
+  user?: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   getAllPost?: Resolver<Maybe<Array<GQLResolversTypes['Post']>>, ParentType, ContextType>;
+  getAllUsers?: Resolver<Maybe<Array<GQLResolversTypes['User']>>, ParentType, ContextType>;
   getPost?: Resolver<GQLResolversTypes['Post'], ParentType, ContextType, RequireFields<GQLQueryGetPostArgs, 'id'>>;
   healthCheck?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
 };
