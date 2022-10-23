@@ -1,5 +1,5 @@
-query GetAllPost {
-  posts: getAllPost {
+query GetAllPost($limit: Int!, $cursor: String) {
+  posts: getAllPost(limit: $limit, cursor: $cursor) {
     ...RegularPost
   }
 }

@@ -7,9 +7,11 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
+import { Post } from './post.entity';
 
 async function preSave(that: User) {
   const errors = await validate(that, {
@@ -46,6 +48,9 @@ export class User {
 
   @Column({ type: 'varchar', select: false })
   password?: string;
+
+  @OneToMany(() => Post, (photo) => photo.user)
+  posts!: Post[];
 
   @CreateDateColumn()
   createdDate!: Date;

@@ -32,7 +32,7 @@ export const startServer = async () => {
       name: Environment.cookieName,
       store: new RedisStore({ client: redis, disableTouch: true }),
       cookie: {
-        maxAge: 1000 * 10, //  change it to later 1day
+        maxAge: 1000 * 60 * 60, //  change it to later 1day
         httpOnly: true,
         sameSite: 'lax',
         secure: Environment.isProd

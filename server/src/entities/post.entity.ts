@@ -17,7 +17,7 @@ export class Post {
   @Column({ type: 'varchar', length: 100 })
   title!: string;
 
-  @Column({ type: 'varchar', length: 200 })
+  @Column({ type: 'varchar', length: 500 })
   text!: string;
 
   @Column({ type: 'int', default: 0 })
@@ -26,7 +26,7 @@ export class Post {
   @Column('uuid')
   userId!: string;
 
-  @ManyToMany(() => User)
+  @ManyToMany(() => User, (user) => user.posts)
   @JoinColumn({ name: 'userId' })
   user!: User;
 

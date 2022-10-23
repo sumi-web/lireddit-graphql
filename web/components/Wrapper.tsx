@@ -11,7 +11,7 @@ const Wrapper = ({ children, variant = 'regular' }: Props) => {
     <Box
       mx="auto"
       maxWidth={variant === 'regular' ? '800px' : '400px'}
-      h="100vh"
+      minH="calc(100vh - 72px)"
       display="flex"
       alignItems="center"
       justifyContent="center"

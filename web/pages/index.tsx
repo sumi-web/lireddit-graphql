@@ -1,11 +1,14 @@
 import { Box } from '@chakra-ui/react';
 import type { NextPage } from 'next';
+import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { useGetAllPostQuery } from '../graphql/graphqlHooks';
 import { withUrql } from '../hocs/withUrqlClient';
 
 const Home: NextPage = () => {
-  const [{ data }] = useGetAllPostQuery();
+  const [limit, setState] = useState(5);
+
+  const [{ data }] = useGetAllPostQuery({ variables: { limit: limit } });
 
   return (
     <div>

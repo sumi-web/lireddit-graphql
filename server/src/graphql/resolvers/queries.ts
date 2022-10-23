@@ -10,11 +10,11 @@ export const queryResolvers: GQLResolvers = {
       return userBackend.getAllUsers();
     },
     // Post
-    getPost: (_, { id }, ctx) => {
+    getPost: (_, { id }) => {
       return postBackend.getPost(id);
     },
-    getAllPost: () => {
-      return postBackend.getAllPost();
+    getAllPost: (_, { limit, cursor }) => {
+      return postBackend.getAllPost(limit, cursor);
     }
   }
 };

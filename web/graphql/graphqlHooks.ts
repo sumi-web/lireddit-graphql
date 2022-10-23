@@ -90,6 +90,12 @@ export type GQLQuery = {
 };
 
 
+export type GQLQueryGetAllPostArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
+
 export type GQLQueryGetPostArgs = {
   id: Scalars['ID'];
 };
@@ -154,7 +160,10 @@ export type GQLResetPasswordMutationVariables = Exact<{
 
 export type GQLResetPasswordMutation = { __typename?: 'Mutation', created: { __typename?: 'User', id: string, userName: string, email: string } };
 
-export type GQLGetAllPostQueryVariables = Exact<{ [key: string]: never; }>;
+export type GQLGetAllPostQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: InputMaybe<Scalars['String']>;
+}>;
 
 
 export type GQLGetAllPostQuery = { __typename?: 'Query', posts?: Array<{ __typename?: 'Post', id: string, title: string, createdDate: any }> | null };
@@ -239,14 +248,14 @@ export function useResetPasswordMutation() {
   return Urql.useMutation<GQLResetPasswordMutation, GQLResetPasswordMutationVariables>(ResetPasswordDocument);
 };
 export const GetAllPostDocument = gql`
-    query GetAllPost {
-  posts: getAllPost {
+    query GetAllPost($limit: Int!, $cursor: String) {
+  posts: getAllPost(limit: $limit, cursor: $cursor) {
     ...RegularPost
   }
 }
     ${RegularPostFragmentDoc}`;
 
-export function useGetAllPostQuery(options?: Omit<Urql.UseQueryArgs<GQLGetAllPostQueryVariables>, 'query'>) {
+export function useGetAllPostQuery(options: Omit<Urql.UseQueryArgs<GQLGetAllPostQueryVariables>, 'query'>) {
   return Urql.useQuery<GQLGetAllPostQuery, GQLGetAllPostQueryVariables>({ query: GetAllPostDocument, ...options });
 };
 export const RehydrateUserDocument = gql`

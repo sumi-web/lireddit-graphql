@@ -89,6 +89,12 @@ export type GQLQuery = {
 };
 
 
+export type GQLQueryGetAllPostArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
+
 export type GQLQueryGetPostArgs = {
   id: Scalars['ID'];
 };
@@ -234,7 +240,7 @@ export type GQLPostResolvers<ContextType = any, ParentType extends GQLResolversP
 };
 
 export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
-  getAllPost?: Resolver<Maybe<Array<GQLResolversTypes['Post']>>, ParentType, ContextType>;
+  getAllPost?: Resolver<Maybe<Array<GQLResolversTypes['Post']>>, ParentType, ContextType, RequireFields<GQLQueryGetAllPostArgs, 'limit'>>;
   getAllUsers?: Resolver<Maybe<Array<GQLResolversTypes['User']>>, ParentType, ContextType>;
   getPost?: Resolver<GQLResolversTypes['Post'], ParentType, ContextType, RequireFields<GQLQueryGetPostArgs, 'id'>>;
   healthCheck?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
