@@ -4,5 +4,5 @@ type Query {
   getAllUsers: [User!]
   # Post
   getPost(id: ID!): Post!
-  getAllPost(limit: Int!, cursor: String): [Post!]
+  getAllPost(limit: Int!, id: ID, cursor: String): PaginatedResult
 }

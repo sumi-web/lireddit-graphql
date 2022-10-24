@@ -8,7 +8,7 @@ import { queryResolvers } from './resolvers/queries';
 const resolvers: GQLResolvers = { ...queryResolvers, ...mutationResolvers };
 
 // getting all gql files in array<DocumentNode>
-const typeDefs = loadFilesSync(path.join(__dirname + '/./**/*.gql'));
+const typeDefs = loadFilesSync(path.join(__dirname + '/../../src/graphql/**/*.gql'));
 
 export const schema = makeExecutableSchema({
   typeDefs,

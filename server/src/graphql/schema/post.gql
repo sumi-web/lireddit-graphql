@@ -15,3 +15,8 @@ input PostInput {
   text: String!
   points: Int
 }
+
+type PaginatedResult {
+  count: Int!
+  posts: [Post!]
+}

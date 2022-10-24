@@ -13,8 +13,8 @@ export const queryResolvers: GQLResolvers = {
     getPost: (_, { id }) => {
       return postBackend.getPost(id);
     },
-    getAllPost: (_, { limit, cursor }) => {
-      return postBackend.getAllPost(limit, cursor);
+    getAllPost: (_, { id, limit, cursor }) => {
+      return postBackend.getAllPost(limit, id, cursor);
     }
   }
 };

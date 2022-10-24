@@ -36,24 +36,28 @@ const getPost = async (id: string): Promise<GQLPost> => {
 };
 
 //  offset- gimme 10 post after the 5 post, with cursor- gimme location after this point
-const getAllPost = async (limit: number, cursor?: string | null): Promise<GQLPost[]> => {
-  console.log('check the limit', limit, cursor);
+const getAllPost = async (limit: number, id?: string | null, cursor?: string | null) => {
+  console.log('check the limit', limit, cursor, id);
 
   const realLimit = Math.min(50, limit);
+
+  const postCount = await Database.manager.query(`SELECT COUNT('id') from post`);
+
+  console.log('count', postCount);
 
   const posts = await Database.getRepository(Post)
     .createQueryBuilder('posts')
     .orderBy(`"createdDate"`, 'DESC')
     .take(realLimit);
 
-  console.log('check the posts', posts);
-
-  if (cursor) {
+  if (cursor && id) {
     const date = isNaN(Number(cursor)) ? new Date(cursor) : new Date(parseInt(cursor));
-    posts.where(`"createdDate" < :cursor`, { cursor: date });
+    posts.where(`"createdDate" < :cursor`, { cursor: date, id });
   }
 
-  return posts.getMany();
+  const allPosts = await posts.getMany();
+
+  return { count: Number(postCount[0].count), posts: allPosts };
 
   // const postRepo = await Database.getRepository(Post);
   // const posts = await postRepo.find();
