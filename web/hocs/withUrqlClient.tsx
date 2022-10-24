@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { withUrqlClient } from 'next-urql';
 import { dedupExchange, fetchExchange } from 'urql';
-import { cacheExchange } from '@urql/exchange-graphcache';
+import { cacheExchange, Resolver } from '@urql/exchange-graphcache';
 import { RehydrateUserDocument, useRehydrateUserMutation } from '../graphql/graphqlHooks';
 import Wrapper from '../components/Wrapper';
 import FullScreenLoader from '../components/FullScreenLoader';
@@ -10,6 +10,7 @@ import { useUser } from '../context/useUser';
 import { pipe, tap } from 'wonka';
 import { Exchange } from 'urql';
 import Router from 'next/router';
+import { stringifyVariables } from '@urql/core';
 
 const errorExchange: Exchange =
   ({ forward }) =>
@@ -27,6 +28,54 @@ const errorExchange: Exchange =
       })
     );
   };
+
+export const cursorPagination = (): Resolver => {
+  return (_parent, fieldArgs, cache, info) => {
+    const { parentKey: entityKey, fieldName } = info;
+
+    const allFields = cache.inspectFields(entityKey);
+
+    const fieldInfos = allFields.filter((info) => info.fieldName === fieldName);
+    const size = fieldInfos.length;
+    if (size === 0) {
+      return undefined;
+    }
+
+    const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`;
+
+    const isItInTheCache = cache.resolve(cache.resolve(entityKey, fieldKey) as string, 'posts');
+
+    info.partial = !isItInTheCache;
+
+    const results: string[] = [];
+
+    let count: number = 0;
+
+    console.log('fieldInfo', entityKey, fieldInfos);
+
+    fieldInfos.forEach((fi) => {
+      const key = cache.resolve(entityKey, fi.fieldKey) as string;
+
+      const posts = cache.resolve(key, 'posts') as string[];
+
+      count = cache.resolve(key, 'count') as number;
+
+      console.log('count', count);
+
+      results.push(...posts);
+    });
+
+    const obj = {
+      __typename: 'PaginatedResult',
+      count,
+      posts: results
+    };
+
+    console.log('thing returned', obj);
+
+    return obj;
+  };
+};
 
 export const withUrql = (Component: React.FC, ssr = false) => {
   const Authenticated = (props: any) => {
@@ -95,6 +144,14 @@ export const withUrql = (Component: React.FC, ssr = false) => {
       exchanges: [
         dedupExchange,
         cacheExchange({
+          keys: {
+            PaginatedResult: () => null
+          },
+          resolvers: {
+            Query: {
+              getAllPost: cursorPagination()
+            }
+          },
           updates: {
             Mutation: {
               logoutUser: (_result, _args, cache, _info) => {

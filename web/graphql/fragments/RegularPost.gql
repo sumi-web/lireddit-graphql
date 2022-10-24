@@ -1,5 +1,6 @@
 fragment RegularPost on Post {
   id
   title
+  text
   createdDate
 }

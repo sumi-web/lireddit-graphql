@@ -64,6 +64,12 @@ export type GQLMutationResetPasswordArgs = {
   token: Scalars['String'];
 };
 
+export type GQLPaginatedResult = {
+  __typename?: 'PaginatedResult';
+  count: Scalars['Int'];
+  posts?: Maybe<Array<GQLPost>>;
+};
+
 export type GQLPost = {
   __typename?: 'Post';
   createdDate: Scalars['Date'];
@@ -83,7 +89,7 @@ export type GQLPostInput = {
 
 export type GQLQuery = {
   __typename?: 'Query';
-  getAllPost?: Maybe<Array<GQLPost>>;
+  getAllPost?: Maybe<GQLPaginatedResult>;
   getAllUsers?: Maybe<Array<GQLUser>>;
   getPost: GQLPost;
   healthCheck: Scalars['String'];
@@ -92,6 +98,7 @@ export type GQLQuery = {
 
 export type GQLQueryGetAllPostArgs = {
   cursor?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
   limit: Scalars['Int'];
 };
 
@@ -115,7 +122,7 @@ export type GQLUser = {
   userName: Scalars['String'];
 };
 
-export type GQLRegularPostFragment = { __typename?: 'Post', id: string, title: string, createdDate: any };
+export type GQLRegularPostFragment = { __typename?: 'Post', id: string, title: string, text: string, createdDate: any };
 
 export type GQLRegularUserFragment = { __typename?: 'User', id: string, userName: string, email: string };
 
@@ -162,11 +169,12 @@ export type GQLResetPasswordMutation = { __typename?: 'Mutation', created: { __t
 
 export type GQLGetAllPostQueryVariables = Exact<{
   limit: Scalars['Int'];
+  id?: InputMaybe<Scalars['ID']>;
   cursor?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type GQLGetAllPostQuery = { __typename?: 'Query', posts?: Array<{ __typename?: 'Post', id: string, title: string, createdDate: any }> | null };
+export type GQLGetAllPostQuery = { __typename?: 'Query', posts?: { __typename?: 'PaginatedResult', count: number, posts?: Array<{ __typename?: 'Post', id: string, title: string, text: string, createdDate: any }> | null } | null };
 
 export type GQLRehydrateUserMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -177,6 +185,7 @@ export const RegularPostFragmentDoc = gql`
     fragment RegularPost on Post {
   id
   title
+  text
   createdDate
 }
     `;
@@ -248,9 +257,12 @@ export function useResetPasswordMutation() {
   return Urql.useMutation<GQLResetPasswordMutation, GQLResetPasswordMutationVariables>(ResetPasswordDocument);
 };
 export const GetAllPostDocument = gql`
-    query GetAllPost($limit: Int!, $cursor: String) {
-  posts: getAllPost(limit: $limit, cursor: $cursor) {
-    ...RegularPost
+    query GetAllPost($limit: Int!, $id: ID, $cursor: String) {
+  posts: getAllPost(limit: $limit, id: $id, cursor: $cursor) {
+    count
+    posts {
+      ...RegularPost
+    }
   }
 }
     ${RegularPostFragmentDoc}`;
