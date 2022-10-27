@@ -3,6 +3,18 @@ import { userBackend } from '../../services/user.service';
 import { GQLResolvers } from '../graphqlTypes';
 
 export const queryResolvers: GQLResolvers = {
+  // field resolvers
+  User: {
+    email: (user, _, { req }) => {
+      //  this is the current user and its ok to show them their own email
+      if (user.id === req.session.userId) {
+        return user.email;
+      }
+      // current user want to see someone else mail
+      return '';
+    }
+  },
+
   Query: {
     healthCheck: () => 'Welcome to lireddit',
     // User
@@ -13,8 +25,8 @@ export const queryResolvers: GQLResolvers = {
     getPost: (_, { id }) => {
       return postBackend.getPost(id);
     },
-    getAllPost: (_, { id, limit, cursor }) => {
-      return postBackend.getAllPost(limit, id, cursor);
+    getAllPost: (_, { limit, cursor }) => {
+      return postBackend.getAllPost(limit, cursor);
     }
   }
 };

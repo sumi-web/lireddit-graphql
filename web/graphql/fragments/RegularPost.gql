@@ -3,4 +3,8 @@ fragment RegularPost on Post {
   title
   text
   createdDate
+  user {
+    id
+    userName
+  }
 }

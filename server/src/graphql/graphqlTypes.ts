@@ -63,6 +63,12 @@ export type GQLMutationResetPasswordArgs = {
   token: Scalars['String'];
 };
 
+export type GQLPaginatedResult = {
+  __typename?: 'PaginatedResult';
+  count: Scalars['Int'];
+  posts?: Maybe<Array<GQLPost>>;
+};
+
 export type GQLPost = {
   __typename?: 'Post';
   createdDate: Scalars['Date'];
@@ -82,7 +88,7 @@ export type GQLPostInput = {
 
 export type GQLQuery = {
   __typename?: 'Query';
-  getAllPost?: Maybe<Array<GQLPost>>;
+  getAllPost?: Maybe<GQLPaginatedResult>;
   getAllUsers?: Maybe<Array<GQLUser>>;
   getPost: GQLPost;
   healthCheck: Scalars['String'];
@@ -91,6 +97,7 @@ export type GQLQuery = {
 
 export type GQLQueryGetAllPostArgs = {
   cursor?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
   limit: Scalars['Int'];
 };
 
@@ -189,6 +196,7 @@ export type GQLResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   LoginInput: GQLLoginInput;
   Mutation: ResolverTypeWrapper<{}>;
+  PaginatedResult: ResolverTypeWrapper<GQLPaginatedResult>;
   Post: ResolverTypeWrapper<GQLPost>;
   PostInput: GQLPostInput;
   Query: ResolverTypeWrapper<{}>;
@@ -205,6 +213,7 @@ export type GQLResolversParentTypes = {
   Int: Scalars['Int'];
   LoginInput: GQLLoginInput;
   Mutation: {};
+  PaginatedResult: GQLPaginatedResult;
   Post: GQLPost;
   PostInput: GQLPostInput;
   Query: {};
@@ -228,6 +237,12 @@ export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolv
   resetPassword?: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationResetPasswordArgs, 'password' | 'token'>>;
 };
 
+export type GQLPaginatedResultResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['PaginatedResult'] = GQLResolversParentTypes['PaginatedResult']> = {
+  count?: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  posts?: Resolver<Maybe<Array<GQLResolversTypes['Post']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GQLPostResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Post'] = GQLResolversParentTypes['Post']> = {
   createdDate?: Resolver<GQLResolversTypes['Date'], ParentType, ContextType>;
   id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
@@ -240,7 +255,7 @@ export type GQLPostResolvers<ContextType = any, ParentType extends GQLResolversP
 };
 
 export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
-  getAllPost?: Resolver<Maybe<Array<GQLResolversTypes['Post']>>, ParentType, ContextType, RequireFields<GQLQueryGetAllPostArgs, 'limit'>>;
+  getAllPost?: Resolver<Maybe<GQLResolversTypes['PaginatedResult']>, ParentType, ContextType, RequireFields<GQLQueryGetAllPostArgs, 'limit'>>;
   getAllUsers?: Resolver<Maybe<Array<GQLResolversTypes['User']>>, ParentType, ContextType>;
   getPost?: Resolver<GQLResolversTypes['Post'], ParentType, ContextType, RequireFields<GQLQueryGetPostArgs, 'id'>>;
   healthCheck?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
@@ -258,6 +273,7 @@ export type GQLUserResolvers<ContextType = any, ParentType extends GQLResolversP
 export type GQLResolvers<ContextType = any> = {
   Date?: GraphQLScalarType;
   Mutation?: GQLMutationResolvers<ContextType>;
+  PaginatedResult?: GQLPaginatedResultResolvers<ContextType>;
   Post?: GQLPostResolvers<ContextType>;
   Query?: GQLQueryResolvers<ContextType>;
   User?: GQLUserResolvers<ContextType>;

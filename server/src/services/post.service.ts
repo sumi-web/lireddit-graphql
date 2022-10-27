@@ -36,28 +36,49 @@ const getPost = async (id: string): Promise<GQLPost> => {
 };
 
 //  offset- gimme 10 post after the 5 post, with cursor- gimme location after this point
-const getAllPost = async (limit: number, id?: string | null, cursor?: string | null) => {
-  console.log('check the limit', limit, cursor, id);
+const getAllPost = async (limit: number, cursor?: string | null) => {
+  console.log('check the limit', limit, cursor);
 
-  const realLimit = Math.min(50, limit);
+  const realLimit = Math.min(200, limit);
 
   const postCount = await Database.manager.query(`SELECT COUNT('id') from post`);
 
-  console.log('count', postCount);
+  let date: Date | null = null;
 
-  const posts = await Database.getRepository(Post)
-    .createQueryBuilder('posts')
-    .orderBy(`"createdDate"`, 'DESC')
-    .take(realLimit);
-
-  if (cursor && id) {
-    const date = isNaN(Number(cursor)) ? new Date(cursor) : new Date(parseInt(cursor));
-    posts.where(`"createdDate" < :cursor`, { cursor: date, id });
+  if (cursor) {
+    console.log('date1', new Date(cursor), cursor);
   }
 
-  const allPosts = await posts.getMany();
+  if (cursor) date = isNaN(Number(cursor)) ? new Date(cursor) : new Date(parseInt(cursor));
+  console.log('date==', date);
 
-  return { count: Number(postCount[0].count), posts: allPosts };
+  const posts = await Database.manager.query(`SELECT post.*,
+  json_build_object(
+    'userName',"user"."userName",
+    'id',"user".id,
+    'email', "user".email
+  ) user
+   FROM post
+   JOIN "user"
+   ON "user".id = post."userId"
+  ${cursor ? ` where post."createdDate" < '${cursor}'` : ''}
+      order by "createdDate" DESC
+      LIMIT ${realLimit}`);
+
+  // const posts = await Database.getRepository(Post)
+  //   .createQueryBuilder('posts')
+  //   .innerJoinAndSelect('posts.user', 'u', 'u.id = posts."userId"')
+  //   .orderBy(`"createdDate"`, 'DESC')
+  //   .take(realLimit);
+
+  // if (cursor && id) {
+
+  //   posts.where(`"createdDate" < :cursor`, { cursor: date, id });
+  // }
+
+  console.log('posts==', posts);
+
+  return { count: Number(postCount[0].count), posts };
 
   // const postRepo = await Database.getRepository(Post);
   // const posts = await postRepo.find();

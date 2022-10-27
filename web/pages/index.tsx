@@ -9,7 +9,7 @@ import { AddIcon } from '@chakra-ui/icons';
 
 const Home: NextPage = () => {
   const [pagination, setPagination] = useState({
-    limit: 33,
+    limit: 5,
     id: null as string | null,
     cursor: null as string | null
   });

@@ -122,7 +122,7 @@ export type GQLUser = {
   userName: Scalars['String'];
 };
 
-export type GQLRegularPostFragment = { __typename?: 'Post', id: string, title: string, text: string, createdDate: any };
+export type GQLRegularPostFragment = { __typename?: 'Post', id: string, title: string, text: string, createdDate: any, user: { __typename?: 'User', id: string, userName: string } };
 
 export type GQLRegularUserFragment = { __typename?: 'User', id: string, userName: string, email: string };
 
@@ -174,7 +174,7 @@ export type GQLGetAllPostQueryVariables = Exact<{
 }>;
 
 
-export type GQLGetAllPostQuery = { __typename?: 'Query', posts?: { __typename?: 'PaginatedResult', count: number, posts?: Array<{ __typename?: 'Post', id: string, title: string, text: string, createdDate: any }> | null } | null };
+export type GQLGetAllPostQuery = { __typename?: 'Query', posts?: { __typename?: 'PaginatedResult', count: number, posts?: Array<{ __typename?: 'Post', id: string, title: string, text: string, createdDate: any, user: { __typename?: 'User', id: string, userName: string } }> | null } | null };
 
 export type GQLRehydrateUserMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -187,6 +187,10 @@ export const RegularPostFragmentDoc = gql`
   title
   text
   createdDate
+  user {
+    id
+    userName
+  }
 }
     `;
 export const RegularUserFragmentDoc = gql`
