@@ -1,7 +1,5 @@
-import { ApolloError } from 'apollo-server-core';
 import { Database } from '../config/database';
 import { Post } from '../entities/post.entity';
-import { User } from '../entities/user.entity';
 import { GQLPost, GQLPostInput } from '../graphql/graphqlTypes';
 
 const createPost = async (userId: string, { title, text }: GQLPostInput): Promise<boolean> => {
@@ -37,8 +35,6 @@ const getPost = async (id: string): Promise<GQLPost> => {
 
 //  offset- gimme 10 post after the 5 post, with cursor- gimme location after this point
 const getAllPost = async (limit: number, cursor?: string | null) => {
-  console.log('check the limit', limit, cursor);
-
   const realLimit = Math.min(200, limit);
 
   const postCount = await Database.manager.query(`SELECT COUNT('id') from post`);

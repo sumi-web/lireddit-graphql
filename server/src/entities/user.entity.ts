@@ -12,6 +12,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 import { Post } from './post.entity';
+import { Updoot } from './updoot.entity';
 
 async function preSave(that: User) {
   const errors = await validate(that, {
@@ -51,6 +52,9 @@ export class User {
 
   @OneToMany(() => Post, (photo) => photo.user)
   posts!: Post[];
+
+  @OneToMany(() => Updoot, (updoot) => updoot.user)
+  updoots!: Updoot[];
 
   @CreateDateColumn()
   createdDate!: Date;

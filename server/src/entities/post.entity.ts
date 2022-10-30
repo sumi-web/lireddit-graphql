@@ -3,10 +3,12 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
+import { Updoot } from './updoot.entity';
 import { User } from './user.entity';
 
 @Entity()
@@ -26,9 +28,13 @@ export class Post {
   @Column('uuid')
   userId!: string;
 
-  @ManyToMany(() => User, (user) => user.posts)
-  @JoinColumn({ name: 'userId' })
+  @ManyToOne(() => User, (user) => user.posts, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user!: User;
+
+  @OneToMany(() => Updoot, (updoot) => updoot.post)
+  @JoinColumn()
+  updoots!: Updoot[];
 
   @CreateDateColumn()
   createdDate!: Date;

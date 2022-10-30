@@ -1,5 +1,4 @@
 import { Database } from '../config/database';
-import { User } from '../entities/user.entity';
 import argon2 from 'argon2';
 import { GQLLoginInput, GQLRegisterInput, GQLUser } from '../graphql/graphqlTypes';
 import { MyContext } from '../types';
@@ -14,9 +13,6 @@ const registerUser = async (
   { userName, email, password }: GQLRegisterInput,
   { req }: MyContext
 ): Promise<GQLUser> => {
-  const user = new User();
-  const userRepo = Database.getRepository(User);
-
   const manager = Database.manager;
 
   const oldUserUsername = await manager.query(
@@ -91,8 +87,6 @@ const rehydrateUser = async ({ req }: MyContext) => {
 
   const manager = Database.manager;
 
-  const userRepo = Database.getRepository(User);
-
   const user = await manager.query(
     `SELECT id, "userName", "createdDate", "updatedDate", email FROM "user" where id ='${req.session.userId}'`
   );
@@ -105,7 +99,6 @@ const rehydrateUser = async ({ req }: MyContext) => {
 };
 
 const forgotPassword = async (userName: string, redis: Redis): Promise<boolean> => {
-  const userRepo = Database.getRepository(User);
   const manager = Database.manager;
 
   const user = await manager.query(`SELECT * FROM "user" where "userName" = '${userName}'`);
@@ -135,7 +128,6 @@ const resetPassword = async (
   { redis, req }: MyContext
 ): Promise<GQLUser> => {
   const hash = crypto.createHash('sha256').update(token).digest('hex');
-  const userRepo = Database.getRepository(User);
   const manager = Database.manager;
 
   const userId = await redis.get(Environment.forgotPasswordPrefix + hash);
