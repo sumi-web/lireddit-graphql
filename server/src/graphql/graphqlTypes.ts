@@ -30,6 +30,7 @@ export type GQLMutation = {
   registerUser: GQLUser;
   rehydrateUser?: Maybe<GQLUser>;
   resetPassword: GQLUser;
+  vote?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -61,6 +62,12 @@ export type GQLMutationRegisterUserArgs = {
 export type GQLMutationResetPasswordArgs = {
   password: Scalars['String'];
   token: Scalars['String'];
+};
+
+
+export type GQLMutationVoteArgs = {
+  postId: Scalars['String'];
+  value: Scalars['Int'];
 };
 
 export type GQLPaginatedResult = {
@@ -235,6 +242,7 @@ export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolv
   registerUser?: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationRegisterUserArgs, 'user'>>;
   rehydrateUser?: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>;
   resetPassword?: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationResetPasswordArgs, 'password' | 'token'>>;
+  vote?: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationVoteArgs, 'postId' | 'value'>>;
 };
 
 export type GQLPaginatedResultResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['PaginatedResult'] = GQLResolversParentTypes['PaginatedResult']> = {

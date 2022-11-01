@@ -31,6 +31,7 @@ export type GQLMutation = {
   registerUser: GQLUser;
   rehydrateUser?: Maybe<GQLUser>;
   resetPassword: GQLUser;
+  vote?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -62,6 +63,12 @@ export type GQLMutationRegisterUserArgs = {
 export type GQLMutationResetPasswordArgs = {
   password: Scalars['String'];
   token: Scalars['String'];
+};
+
+
+export type GQLMutationVoteArgs = {
+  postId: Scalars['String'];
+  value: Scalars['Int'];
 };
 
 export type GQLPaginatedResult = {

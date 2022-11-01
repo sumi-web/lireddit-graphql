@@ -1,5 +1,6 @@
 import { ApolloError } from 'apollo-server-core';
 import { postBackend } from '../../services/post.service';
+import { updootBackend } from '../../services/updoot.service';
 import { userBackend } from '../../services/user.service';
 import { MyContext } from '../../types';
 import { Environment } from '../../utils/environment';
@@ -45,6 +46,13 @@ export const mutationResolvers: GQLResolvers = {
     },
     deletePost: (_, { id }) => {
       return postBackend.deletePost(id);
+    },
+    // Vote
+    vote: (_, { postId, value }, ctx) => {
+      if (!ctx.req.session.userId) {
+        throw new ApolloError('User not authenticated');
+      }
+      return updootBackend.vote(ctx.req.session.userId, postId, value);
     }
   }
 };

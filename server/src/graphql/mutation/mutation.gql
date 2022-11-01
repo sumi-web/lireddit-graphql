@@ -9,4 +9,6 @@ type Mutation {
   # Post
   createPost(post: PostInput!): Boolean
   deletePost(id: ID!): Boolean
+  # Vote
+  vote(postId: String!, value: Int!): Boolean
 }
