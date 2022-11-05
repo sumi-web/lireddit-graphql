@@ -129,7 +129,7 @@ export type GQLUser = {
   userName: Scalars['String'];
 };
 
-export type GQLRegularPostFragment = { __typename?: 'Post', id: string, title: string, text: string, createdDate: any, user: { __typename?: 'User', id: string, userName: string } };
+export type GQLRegularPostFragment = { __typename?: 'Post', id: string, title: string, text: string, points: number, createdDate: any, user: { __typename?: 'User', id: string, userName: string } };
 
 export type GQLRegularUserFragment = { __typename?: 'User', id: string, userName: string, email: string };
 
@@ -174,6 +174,14 @@ export type GQLResetPasswordMutationVariables = Exact<{
 
 export type GQLResetPasswordMutation = { __typename?: 'Mutation', created: { __typename?: 'User', id: string, userName: string, email: string } };
 
+export type GQLVoteMutationVariables = Exact<{
+  postId: Scalars['String'];
+  value: Scalars['Int'];
+}>;
+
+
+export type GQLVoteMutation = { __typename?: 'Mutation', voted?: boolean | null };
+
 export type GQLGetAllPostQueryVariables = Exact<{
   limit: Scalars['Int'];
   id?: InputMaybe<Scalars['ID']>;
@@ -181,7 +189,7 @@ export type GQLGetAllPostQueryVariables = Exact<{
 }>;
 
 
-export type GQLGetAllPostQuery = { __typename?: 'Query', posts?: { __typename?: 'PaginatedResult', count: number, posts?: Array<{ __typename?: 'Post', id: string, title: string, text: string, createdDate: any, user: { __typename?: 'User', id: string, userName: string } }> | null } | null };
+export type GQLGetAllPostQuery = { __typename?: 'Query', posts?: { __typename?: 'PaginatedResult', count: number, posts?: Array<{ __typename?: 'Post', id: string, title: string, text: string, points: number, createdDate: any, user: { __typename?: 'User', id: string, userName: string } }> | null } | null };
 
 export type GQLRehydrateUserMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -193,6 +201,7 @@ export const RegularPostFragmentDoc = gql`
   id
   title
   text
+  points
   createdDate
   user {
     id
@@ -266,6 +275,15 @@ export const ResetPasswordDocument = gql`
 
 export function useResetPasswordMutation() {
   return Urql.useMutation<GQLResetPasswordMutation, GQLResetPasswordMutationVariables>(ResetPasswordDocument);
+};
+export const VoteDocument = gql`
+    mutation Vote($postId: String!, $value: Int!) {
+  voted: vote(postId: $postId, value: $value)
+}
+    `;
+
+export function useVoteMutation() {
+  return Urql.useMutation<GQLVoteMutation, GQLVoteMutationVariables>(VoteDocument);
 };
 export const GetAllPostDocument = gql`
     query GetAllPost($limit: Int!, $id: ID, $cursor: String) {

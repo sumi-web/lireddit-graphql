@@ -2,6 +2,7 @@ fragment RegularPost on Post {
   id
   title
   text
+  points
   createdDate
   user {
     id

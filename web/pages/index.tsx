@@ -1,15 +1,18 @@
-import { Box, Button, Container, Flex, Heading, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Container, Flex, Heading, IconButton, Stack, Text } from '@chakra-ui/react';
 import type { NextPage } from 'next';
-import Link from 'next/link';
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { useGetAllPostQuery } from '../graphql/graphqlHooks';
 import { withUrql } from '../hocs/withUrqlClient';
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/router';
+import UpdootSection from '../components/UpdootSection';
 
 const Home: NextPage = () => {
+  const router = useRouter();
+
   const [pagination, setPagination] = useState({
-    limit: 5,
+    limit: 10,
     id: null as string | null,
     cursor: null as string | null
   });
@@ -36,9 +39,9 @@ const Home: NextPage = () => {
       <Container maxW={'1000px'} pt="16px" pb={'3rem'}>
         <Flex alignItems={'center'} justifyContent="space-between">
           <Heading>LiReddit</Heading>
-          <Button colorScheme="teal">
+          <Button colorScheme="teal" onClick={() => router.push('/create-post')}>
             <AddIcon mr={'10px'} />
-            <Link href={'/create-post'}>Create Post</Link>
+            Create Post
           </Button>
         </Flex>
         <br />
@@ -48,13 +51,21 @@ const Home: NextPage = () => {
           <Stack direction={'column'} spacing={8}>
             {posts!.posts?.map((post, i) => (
               <Box key={post.id} p={5} shadow="md" borderWidth="1px">
-                <Heading fontSize="xl">
-                  {i + 1}.{post.title}
-                </Heading>
-                <Text mt={4}>
-                  {post.text.slice(0, 100)}
-                  {post.text.length > 100 ? '...' : ''}
-                </Text>
+                <Flex>
+                  <UpdootSection post={post} />
+                  <Flex justifyContent={'space-between'} direction="column" width={'100%'}>
+                    <Flex justifyContent={'space-between'} direction="row">
+                      <Heading fontSize="xl">
+                        {i + 1}.{post.title}
+                      </Heading>
+                      <Text>{post.user.userName}</Text>
+                    </Flex>
+                    <Text mt={4}>
+                      {post.text.slice(0, 100)}
+                      {post.text.length > 100 ? '...' : ''}
+                    </Text>
+                  </Flex>
+                </Flex>
               </Box>
             ))}
           </Stack>
