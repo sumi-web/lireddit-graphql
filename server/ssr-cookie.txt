@@ -1,0 +1,3 @@
+for ssr=> browser -> next.js -> graphql api
+
+for client side req => browser -> graphql api

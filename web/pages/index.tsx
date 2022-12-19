@@ -1,10 +1,10 @@
-import { Box, Button, Container, Flex, Heading, IconButton, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Container, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 import type { NextPage } from 'next';
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { useGetAllPostQuery } from '../graphql/graphqlHooks';
 import { withUrql } from '../hocs/withUrqlClient';
-import { AddIcon, ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import { AddIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
 import UpdootSection from '../components/UpdootSection';
 
@@ -19,7 +19,7 @@ const Home: NextPage = () => {
 
   const [{ data, fetching }, reexcuteQuery] = useGetAllPostQuery({
     variables: pagination,
-    requestPolicy: 'network-only'
+    requestPolicy: 'cache-and-network'
   });
   console.log('posts', data);
 
@@ -50,9 +50,16 @@ const Home: NextPage = () => {
         ) : (
           <Stack direction={'column'} spacing={8}>
             {posts!.posts?.map((post, i) => (
-              <Box key={post.id} p={5} shadow="md" borderWidth="1px">
+              <Box
+                key={post.id}
+                p={5}
+                shadow="md"
+                borderWidth="1px"
+                cursor={'pointer'}
+                onClick={() => router.push('/post/' + post.id)}
+              >
                 <Flex>
-                  <UpdootSection post={post} />
+                  <UpdootSection post={post} updateQuery={reexcuteQuery} />
                   <Flex justifyContent={'space-between'} direction="column" width={'100%'}>
                     <Flex justifyContent={'space-between'} direction="row">
                       <Heading fontSize="xl">
@@ -96,4 +103,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default withUrql(Home, true);
+export default withUrql(Home, false);

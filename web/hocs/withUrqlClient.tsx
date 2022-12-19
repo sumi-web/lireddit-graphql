@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { withUrqlClient } from 'next-urql';
-import { dedupExchange, fetchExchange } from 'urql';
+import { dedupExchange, fetchExchange, gql } from 'urql';
 import { cacheExchange, Resolver } from '@urql/exchange-graphcache';
-import { RehydrateUserDocument, useRehydrateUserMutation } from '../graphql/graphqlHooks';
+import {
+  GQLVoteMutationVariables,
+  RehydrateUserDocument,
+  useRehydrateUserMutation
+} from '../graphql/graphqlHooks';
 import Wrapper from '../components/Wrapper';
 import FullScreenLoader from '../components/FullScreenLoader';
 import { useRouter } from 'next/router';
@@ -11,6 +15,7 @@ import { pipe, tap } from 'wonka';
 import { Exchange } from 'urql';
 import Router from 'next/router';
 import { stringifyVariables } from '@urql/core';
+import { isServer } from '../utils/isServer';
 
 const errorExchange: Exchange =
   ({ forward }) =>
@@ -70,8 +75,6 @@ export const cursorPagination = (): Resolver => {
       count,
       posts: results
     };
-
-    console.log('thing returned', obj);
 
     return obj;
   };
@@ -136,38 +139,76 @@ export const withUrql = (Component: React.FC, ssr = false) => {
   };
 
   return withUrqlClient(
-    (ssrExchange) => ({
-      url: 'http://localhost:5001/graphql',
-      fetchOptions: {
-        credentials: 'include'
-      },
-      exchanges: [
-        dedupExchange,
-        cacheExchange({
-          keys: {
-            PaginatedResult: () => null
-          },
-          resolvers: {
-            Query: {
-              getAllPost: cursorPagination()
-            }
-          },
-          updates: {
-            Mutation: {
-              logoutUser: (_result, _args, cache, _info) => {
-                // updating the query cache manually
-                cache.updateQuery({ query: RehydrateUserDocument }, () => {
-                  return { user: null, __typename: 'User' };
-                });
+    (ssrExchange, ctx) => {
+      let cookie = '';
+      if (isServer()) {
+        cookie = ctx?.req?.headers.cookie || '';
+      }
+
+      return {
+        url: 'http://localhost:5001/graphql',
+        fetchOptions: {
+          credentials: 'include',
+          headers: cookie
+            ? {
+                cookie,
+                extra: 'ok'
+              }
+            : undefined
+        },
+        exchanges: [
+          dedupExchange,
+          cacheExchange({
+            keys: {
+              PaginatedResult: () => null
+            },
+            resolvers: {
+              Query: {
+                getAllPost: cursorPagination()
+              }
+            },
+            updates: {
+              Mutation: {
+                _vote: (_result, args, cache, _info) => {
+                  const { postId, value } = args as GQLVoteMutationVariables;
+                  const data = cache.readFragment(
+                    gql`
+                      fragment _ on Post {
+                        id
+                        points
+                      }
+                    `,
+                    { id: postId }
+                  ); // Data or null
+
+                  if (data) {
+                    const newPoints = data.points + value;
+
+                    cache.writeFragment(
+                      gql`
+                        fragment _ on Post {
+                          points
+                        }
+                      `,
+                      { id: postId, points: newPoints }
+                    );
+                  }
+                },
+                logoutUser: (_result, _args, cache, _info) => {
+                  // updating the query cache manually
+                  cache.updateQuery({ query: RehydrateUserDocument }, () => {
+                    return { user: null, __typename: 'User' };
+                  });
+                }
               }
             }
-          }
-        }),
-        errorExchange,
-        ssrExchange,
-        fetchExchange
-      ]
-    }),
+          }),
+          errorExchange,
+          ssrExchange,
+          fetchExchange
+        ]
+      };
+    },
     { ssr }
   )(Authenticated);
 };

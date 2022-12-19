@@ -6,6 +6,7 @@ type Post {
   text: String!
   points: Int!
   user: User!
+  voteStatus: Int
   createdDate: Date!
   updatedDate: Date!
 }

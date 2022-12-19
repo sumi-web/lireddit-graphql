@@ -20,11 +20,10 @@ const getPost = async (id: string): Promise<GQLPost> => {
   const post = await postRepo.find({
     where: {
       id
-    },
-    relations: { userId: true }
+    }
   });
 
-  console.log('check the post', post);
+  console.log('post called', post);
 
   if (!post) {
     throw new Error('post not found');
@@ -34,7 +33,7 @@ const getPost = async (id: string): Promise<GQLPost> => {
 };
 
 //  offset- gimme 10 post after the 5 post, with cursor- gimme location after this point
-const getAllPost = async (limit: number, cursor?: string | null) => {
+const getAllPost = async (sessionId: string, limit: number, cursor?: string | null) => {
   const realLimit = Math.min(200, limit);
 
   const postCount = await Database.manager.query(`SELECT COUNT('id') from post`);
@@ -46,20 +45,28 @@ const getAllPost = async (limit: number, cursor?: string | null) => {
   }
 
   if (cursor) date = isNaN(Number(cursor)) ? new Date(cursor) : new Date(parseInt(cursor));
-  console.log('date==', date);
 
-  const posts = await Database.manager.query(`SELECT post.*,
+  const posts = await Database.manager.query(
+    `
+  SELECT post.*,
   json_build_object(
     'userName',"user"."userName",
     'id',"user".id,
     'email', "user".email
-  ) user
+  ) user ,
+${
+  sessionId
+    ? '(select value from updoot where "userId" = $1 and "postId" = post.id) as "voteStatus"'
+    : 'null as "voteStatus"'
+}
    FROM post
    JOIN "user"
    ON "user".id = post."userId"
   ${cursor ? ` where post."createdDate" < '${cursor}'` : ''}
       order by "createdDate" DESC
-      LIMIT ${realLimit}`);
+      LIMIT ${realLimit}`,
+    [sessionId]
+  );
 
   // const posts = await Database.getRepository(Post)
   //   .createQueryBuilder('posts')
@@ -71,8 +78,6 @@ const getAllPost = async (limit: number, cursor?: string | null) => {
 
   //   posts.where(`"createdDate" < :cursor`, { cursor: date, id });
   // }
-
-  console.log('posts==', posts);
 
   return { count: Number(postCount[0].count), posts };
 

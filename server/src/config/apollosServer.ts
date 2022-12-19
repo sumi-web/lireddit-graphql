@@ -13,7 +13,9 @@ export const startApolloServer = async (app: Application, redis: Redis) => {
     csrfPrevention: true,
     cache: 'bounded',
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-    context: ({ req, res }: MyContext) => ({ req, res, redis })
+    context: ({ req, res }: MyContext) => {
+      return { req, res, redis };
+    }
   });
 
   await apolloServer.start();

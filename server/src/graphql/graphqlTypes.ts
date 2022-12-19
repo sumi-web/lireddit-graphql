@@ -85,6 +85,7 @@ export type GQLPost = {
   title: Scalars['String'];
   updatedDate: Scalars['Date'];
   user: GQLUser;
+  voteStatus?: Maybe<Scalars['Int']>;
 };
 
 export type GQLPostInput = {
@@ -259,6 +260,7 @@ export type GQLPostResolvers<ContextType = any, ParentType extends GQLResolversP
   title?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   updatedDate?: Resolver<GQLResolversTypes['Date'], ParentType, ContextType>;
   user?: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
+  voteStatus?: Resolver<Maybe<GQLResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

@@ -25,8 +25,10 @@ export const queryResolvers: GQLResolvers = {
     getPost: (_, { id }) => {
       return postBackend.getPost(id);
     },
-    getAllPost: (_, { limit, cursor }) => {
-      return postBackend.getAllPost(limit, cursor);
+    getAllPost: (_, { limit, cursor }, ctx) => {
+      const sessionId = ctx.req.session?.userId;
+
+      return postBackend.getAllPost(sessionId, limit, cursor);
     }
   }
 };

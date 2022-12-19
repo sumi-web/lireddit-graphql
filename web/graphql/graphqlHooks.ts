@@ -86,6 +86,7 @@ export type GQLPost = {
   title: Scalars['String'];
   updatedDate: Scalars['Date'];
   user: GQLUser;
+  voteStatus?: Maybe<Scalars['Int']>;
 };
 
 export type GQLPostInput = {
@@ -129,7 +130,7 @@ export type GQLUser = {
   userName: Scalars['String'];
 };
 
-export type GQLRegularPostFragment = { __typename?: 'Post', id: string, title: string, text: string, points: number, createdDate: any, user: { __typename?: 'User', id: string, userName: string } };
+export type GQLRegularPostFragment = { __typename?: 'Post', id: string, title: string, text: string, points: number, voteStatus?: number | null, createdDate: any, user: { __typename?: 'User', id: string, userName: string } };
 
 export type GQLRegularUserFragment = { __typename?: 'User', id: string, userName: string, email: string };
 
@@ -189,7 +190,14 @@ export type GQLGetAllPostQueryVariables = Exact<{
 }>;
 
 
-export type GQLGetAllPostQuery = { __typename?: 'Query', posts?: { __typename?: 'PaginatedResult', count: number, posts?: Array<{ __typename?: 'Post', id: string, title: string, text: string, points: number, createdDate: any, user: { __typename?: 'User', id: string, userName: string } }> | null } | null };
+export type GQLGetAllPostQuery = { __typename?: 'Query', posts?: { __typename?: 'PaginatedResult', count: number, posts?: Array<{ __typename?: 'Post', id: string, title: string, text: string, points: number, voteStatus?: number | null, createdDate: any, user: { __typename?: 'User', id: string, userName: string } }> | null } | null };
+
+export type GQLGetPostQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GQLGetPostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, title: string, text: string, points: number, voteStatus?: number | null, createdDate: any, user: { __typename?: 'User', id: string, userName: string } } };
 
 export type GQLRehydrateUserMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -202,6 +210,7 @@ export const RegularPostFragmentDoc = gql`
   title
   text
   points
+  voteStatus
   createdDate
   user {
     id
@@ -298,6 +307,17 @@ export const GetAllPostDocument = gql`
 
 export function useGetAllPostQuery(options: Omit<Urql.UseQueryArgs<GQLGetAllPostQueryVariables>, 'query'>) {
   return Urql.useQuery<GQLGetAllPostQuery, GQLGetAllPostQueryVariables>({ query: GetAllPostDocument, ...options });
+};
+export const GetPostDocument = gql`
+    query GetPost($id: ID!) {
+  post: getPost(id: $id) {
+    ...RegularPost
+  }
+}
+    ${RegularPostFragmentDoc}`;
+
+export function useGetPostQuery(options: Omit<Urql.UseQueryArgs<GQLGetPostQueryVariables>, 'query'>) {
+  return Urql.useQuery<GQLGetPostQuery, GQLGetPostQueryVariables>({ query: GetPostDocument, ...options });
 };
 export const RehydrateUserDocument = gql`
     mutation RehydrateUser {
