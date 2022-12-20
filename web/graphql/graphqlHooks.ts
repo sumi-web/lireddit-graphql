@@ -141,6 +141,13 @@ export type GQLCreatePostMutationVariables = Exact<{
 
 export type GQLCreatePostMutation = { __typename?: 'Mutation', created?: boolean | null };
 
+export type GQLDeletePostMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GQLDeletePostMutation = { __typename?: 'Mutation', deleted?: boolean | null };
+
 export type GQLForgotPasswordMutationVariables = Exact<{
   userName: Scalars['String'];
 }>;
@@ -233,6 +240,15 @@ export const CreatePostDocument = gql`
 
 export function useCreatePostMutation() {
   return Urql.useMutation<GQLCreatePostMutation, GQLCreatePostMutationVariables>(CreatePostDocument);
+};
+export const DeletePostDocument = gql`
+    mutation DeletePost($id: ID!) {
+  deleted: deletePost(id: $id)
+}
+    `;
+
+export function useDeletePostMutation() {
+  return Urql.useMutation<GQLDeletePostMutation, GQLDeletePostMutationVariables>(DeletePostDocument);
 };
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($userName: String!) {

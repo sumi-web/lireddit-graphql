@@ -16,12 +16,22 @@ const createPost = async (userId: string, { title, text }: GQLPostInput): Promis
 };
 
 const getPost = async (id: string): Promise<GQLPost> => {
-  const postRepo = await Database.getRepository(Post);
-  const post = await postRepo.find({
-    where: {
-      id
-    }
-  });
+  const post = await Database.manager.query(
+    `
+select post.*,
+json_build_object(
+  'id', "user".id,
+'email', "user".email,
+    'userName',"user"."userName",
+    'email', "user".email
+) user
+from post
+JOIN "user"
+ON "user".id = post."userId"
+where post.id =$1
+`,
+    [id]
+  );
 
   console.log('post called', post);
 
