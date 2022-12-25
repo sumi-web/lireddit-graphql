@@ -44,7 +44,12 @@ export const mutationResolvers: GQLResolvers = {
       }
       return postBackend.createPost(ctx.req.session.userId, post);
     },
-    deletePost: (_, { id }) => {
+    deletePost: (_, { id }, ctx) => {
+      console.log('id here', id);
+
+      if (!ctx.req.session.userId) {
+        throw new ApolloError('User not authenticated');
+      }
       return postBackend.deletePost(id);
     },
     // Vote

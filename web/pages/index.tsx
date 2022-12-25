@@ -2,11 +2,12 @@ import { Box, Button, Container, Flex, Heading, Stack, Text } from '@chakra-ui/r
 import type { NextPage } from 'next';
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
-import { useGetAllPostQuery } from '../graphql/graphqlHooks';
+import { useDeletePostMutation, useGetAllPostQuery } from '../graphql/graphqlHooks';
 import { withUrql } from '../hocs/withUrqlClient';
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
 import UpdootSection from '../components/UpdootSection';
+import Link from 'next/link';
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -21,7 +22,8 @@ const Home: NextPage = () => {
     variables: pagination,
     requestPolicy: 'cache-and-network'
   });
-  console.log('posts', data);
+
+  const [_, deletePost] = useDeletePostMutation();
 
   if (!data) {
     return null;
@@ -50,21 +52,16 @@ const Home: NextPage = () => {
         ) : (
           <Stack direction={'column'} spacing={8}>
             {posts!.posts?.map((post, i) => (
-              <Box
-                key={post.id}
-                p={5}
-                shadow="md"
-                borderWidth="1px"
-                cursor={'pointer'}
-                onClick={() => router.push('/post/' + post.id)}
-              >
-                <Flex>
+              <Box key={post.id} p={5} shadow="md" borderWidth="1px" cursor={'pointer'}>
+                <Flex position={'relative'}>
                   <UpdootSection post={post} updateQuery={reexcuteQuery} />
                   <Flex justifyContent={'space-between'} direction="column" width={'100%'}>
                     <Flex justifyContent={'space-between'} direction="row">
-                      <Heading fontSize="xl">
-                        {i + 1}.{post.title}
-                      </Heading>
+                      <Link href={'/post/' + post.id}>
+                        <Heading fontSize="xl">
+                          {i + 1}.{post.title}
+                        </Heading>
+                      </Link>
                       <Text>{post.user.userName}</Text>
                     </Flex>
                     <Text mt={4}>
@@ -72,6 +69,21 @@ const Home: NextPage = () => {
                       {post.text.length > 100 ? '...' : ''}
                     </Text>
                   </Flex>
+                  <Button
+                    width={'26px'}
+                    height="32px"
+                    position={'absolute'}
+                    bottom="0"
+                    right={'0'}
+                    fontSize="0.8rem"
+                    colorScheme="red"
+                    onClick={async () => {
+                      await deletePost({ id: post.id });
+                      reexcuteQuery();
+                    }}
+                  >
+                    <DeleteIcon />
+                  </Button>
                 </Flex>
               </Box>
             ))}
